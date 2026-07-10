@@ -1,27 +1,15 @@
-package com.example.GymManagementSystem.model;
+package com.example.GymManagementSystem.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-@Entity
-public class Member extends AuditableEntity {
+public class EnrollmentRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String memberCode;
-    
     @NotBlank(message = "Name cannot be empty")
     private String name;
 
-    @Column(unique = true)
+    @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     private String phone;
 
@@ -30,31 +18,13 @@ public class Member extends AuditableEntity {
     @Pattern(regexp = "\\d{10}", message = "Emergency contact phone must be 10 digits")
     private String emergencyContactPhone;
 
-    private String photoUrl;
+    @NotNull(message = "Plan id is required")
+    private Long planId;
 
-    public Member(String name, String phone) {
-        this.name = name;
-        this.phone = phone;
-    }
+    @NotBlank(message = "Transaction id is required")
+    private String transactionId;
 
-    public Member() {
-    }
-
-     public String getMemberCode() {
-        return memberCode;
-    }
-
-    public void setMemberCode(String memberCode) {
-        this.memberCode = memberCode;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
+    private String paymentMode = "GPAY";
 
     public String getName() {
         return name;
@@ -88,12 +58,27 @@ public class Member extends AuditableEntity {
         this.emergencyContactPhone = emergencyContactPhone;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public Long getPlanId() {
+        return planId;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setPlanId(Long planId) {
+        this.planId = planId;
     }
 
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getPaymentMode() {
+        return paymentMode;
+    }
+
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
+    }
 }

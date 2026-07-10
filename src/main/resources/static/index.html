@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MUSCLE MONSTERZ | Gym Command Center</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="shell">
+        <aside class="brand-rail">
+            <div class="brand-mark">MM</div>
+            <nav class="rail-nav" aria-label="Main sections">
+                <a href="#dashboard" class="active">Dashboard</a>
+                <a href="#members">Members</a>
+                <a href="#attendance">Check-in</a>
+                <a href="#billing">Billing</a>
+            </nav>
+        </aside>
+
+        <main class="workspace">
+            <section id="dashboard" class="top-stage">
+                <div class="stage-copy">
+                    <p class="eyebrow">Front desk control room</p>
+                    <h1>MUSCLE MONSTERZ</h1>
+                    <p class="stage-line">Members, renewals, check-ins, and revenue in one sharp screen.</p>
+                </div>
+                <div class="stage-card">
+                    <span class="pulse-dot"></span>
+                    <strong id="clock">Ready</strong>
+                    <span>Owner view</span>
+                </div>
+            </section>
+
+            <section class="stats-grid" aria-label="Dashboard statistics">
+                <article class="stat-tile hot">
+                    <span>Total Members</span>
+                    <strong id="totalMembers">0</strong>
+                </article>
+                <article class="stat-tile green">
+                    <span>Active Members</span>
+                    <strong id="activeMembers">0</strong>
+                </article>
+                <article class="stat-tile amber">
+                    <span>Expiring Soon</span>
+                    <strong id="membershipsExpiringSoon">0</strong>
+                </article>
+                <article class="stat-tile blue">
+                    <span>Today Check-ins</span>
+                    <strong id="todaysCheckIns">0</strong>
+                </article>
+                <article class="stat-tile money">
+                    <span>Today Revenue</span>
+                    <strong id="todaysRevenue">Rs 0</strong>
+                </article>
+                <article class="stat-tile money">
+                    <span>Monthly Revenue</span>
+                    <strong id="monthlyRevenue">Rs 0</strong>
+                </article>
+            </section>
+
+            <section class="command-strip" id="attendance">
+                <form id="quickCheckInForm" class="command-card">
+                    <div>
+                        <span class="panel-kicker">Quick check-in</span>
+                        <h2>Scan. Search. Smash entry.</h2>
+                    </div>
+                    <div class="inline-action">
+                        <input id="checkInLookup" name="memberCodeOrPhone" placeholder="GYM001 or 9876543210" autocomplete="off" required>
+                        <button type="submit">Check In</button>
+                    </div>
+                </form>
+
+                <form id="searchForm" class="command-card dark">
+                    <div>
+                        <span class="panel-kicker">Member finder</span>
+                        <h2>Find any member fast.</h2>
+                    </div>
+                    <div class="inline-action">
+                        <input id="searchQuery" name="query" placeholder="Name, phone, or code" autocomplete="off" required>
+                        <button type="submit">Search</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="content-grid enrollment-grid" id="members">
+                <article class="panel form-panel enrollment-panel">
+                    <div class="panel-head">
+                        <span class="panel-kicker">New enrollment</span>
+                        <h2>Create member with membership</h2>
+                    </div>
+                    <form id="enrollmentForm" class="stack-form enrollment-form">
+                        <div class="form-columns">
+                            <label>Name<input name="name" required></label>
+                            <label>Phone<input name="phone" pattern="[0-9]{10}" required></label>
+                            <label>Emergency Contact<input name="emergencyContactName"></label>
+                            <label>Emergency Phone<input name="emergencyContactPhone" pattern="[0-9]{10}"></label>
+                        </div>
+                        <input id="selectedPlanId" name="planId" type="hidden" required>
+                        <div>
+                            <span class="field-title">Choose plan</span>
+                            <div id="planCards" class="plan-grid"></div>
+                        </div>
+                        <div id="paymentBox" class="payment-box">
+                            <div>
+                                <span class="panel-kicker">Payment</span>
+                                <strong id="paymentAmount">Select a plan</strong>
+                                <span id="gpayNumber" class="meta"></span>
+                            </div>
+                            <div id="qrPreview" class="qr-preview">QR</div>
+                        </div>
+                        <div class="form-columns">
+                            <label>Transaction ID<input name="transactionId" placeholder="Reference ID after payment" required></label>
+                            <label>Payment Mode
+                                <select name="paymentMode" required>
+                                    <option>GPAY</option>
+                                    <option>PHONEPE</option>
+                                    <option>CASH</option>
+                                    <option>CARD</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="submit">Enroll Member</button>
+                    </form>
+                </article>
+
+                <article class="panel list-panel">
+                    <div class="panel-head row">
+                        <div>
+                            <span class="panel-kicker">Search results</span>
+                            <h2>Member cards</h2>
+                        </div>
+                        <button id="refreshButton" class="small-button">Refresh</button>
+                    </div>
+                    <div id="memberResults" class="card-list"></div>
+                </article>
+            </section>
+            <section class="content-grid lower-grid">
+                <article class="panel list-panel">
+                    <div class="panel-head">
+                        <span class="panel-kicker">Risk queue</span>
+                        <h2>Expiring in 7 days</h2>
+                    </div>
+                    <div id="expiringList" class="compact-list"></div>
+                </article>
+
+                <article class="panel list-panel">
+                    <div class="panel-head">
+                        <span class="panel-kicker">Today</span>
+                        <h2>Check-in board</h2>
+                    </div>
+                    <div id="todayAttendance" class="compact-list"></div>
+                </article>
+
+                <article class="panel list-panel">
+                    <div class="panel-head">
+                        <span class="panel-kicker">Revenue</span>
+                        <h2>Cash pulse</h2>
+                    </div>
+                    <div class="revenue-stack">
+                        <div><span>Yearly</span><strong id="yearlyRevenue">Rs 0</strong></div>
+                        <div><span>Expired Members</span><strong id="expiredMembers">0</strong></div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js"></script>
+</body>
+</html>
+
+

@@ -1,59 +1,43 @@
-package com.example.GymManagementSystem.model;
+package com.example.GymManagementSystem.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import com.example.GymManagementSystem.model.Member;
 
-@Entity
-public class Member extends AuditableEntity {
+public class MemberResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true)
     private String memberCode;
-    
-    @NotBlank(message = "Name cannot be empty")
     private String name;
-
-    @Column(unique = true)
-    @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     private String phone;
-
     private String emergencyContactName;
-
-    @Pattern(regexp = "\\d{10}", message = "Emergency contact phone must be 10 digits")
     private String emergencyContactPhone;
-
     private String photoUrl;
 
-    public Member(String name, String phone) {
-        this.name = name;
-        this.phone = phone;
+    public static MemberResponse from(Member member) {
+        MemberResponse response = new MemberResponse();
+        response.setId(member.getId());
+        response.setMemberCode(member.getMemberCode());
+        response.setName(member.getName());
+        response.setPhone(member.getPhone());
+        response.setEmergencyContactName(member.getEmergencyContactName());
+        response.setEmergencyContactPhone(member.getEmergencyContactPhone());
+        response.setPhotoUrl(member.getPhotoUrl());
+        return response;
     }
 
-    public Member() {
-    }
-
-     public String getMemberCode() {
-        return memberCode;
-    }
-
-    public void setMemberCode(String memberCode) {
-        this.memberCode = memberCode;
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() {
-        return this.id;
+    public String getMemberCode() {
+        return memberCode;
+    }
+
+    public void setMemberCode(String memberCode) {
+        this.memberCode = memberCode;
     }
 
     public String getName() {
@@ -95,5 +79,4 @@ public class Member extends AuditableEntity {
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
-
 }

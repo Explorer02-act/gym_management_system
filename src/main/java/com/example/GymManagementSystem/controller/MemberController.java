@@ -1,9 +1,13 @@
 package com.example.GymManagementSystem.controller;
 
+import com.example.GymManagementSystem.dto.MemberRequest;
+import com.example.GymManagementSystem.dto.MemberResponse;
+import com.example.GymManagementSystem.dto.MemberStatusResponse;
+import com.example.GymManagementSystem.dto.MembershipResponse;
 import com.example.GymManagementSystem.dto.RenewRequest;
-import com.example.GymManagementSystem.model.Member;
-import com.example.GymManagementSystem.model.Membership;
+import com.example.GymManagementSystem.exception.BadRequestException;
 import com.example.GymManagementSystem.service.MemberService;
+import com.example.GymManagementSystem.service.MembershipService;
 
 import jakarta.validation.Valid;
 
@@ -16,19 +20,42 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MembershipService membershipService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService,
+                            MembershipService membershipService) {
         this.memberService = memberService;
+        this.membershipService = membershipService;
     }
 
     @PostMapping
-    public Member addMember(@Valid @RequestBody Member member) {
-        return memberService.addMember(member);
+    public MemberResponse addMember(@Valid @RequestBody MemberRequest member) {
+        throw new BadRequestException("Members must be created through enrollment. Use POST /enrollment to create the member, membership, and payment together.");
     }
 
     @GetMapping
-    public List<Member> getAllMembers() {
+    public List<MemberResponse> getAllMembers() {
         return memberService.getAllMembers();
+    }
+
+    @GetMapping("/active")
+    public List<MemberStatusResponse> getActiveMembers() {
+        return memberService.getActiveMembers();
+    }
+
+    @GetMapping("/expired")
+    public List<MemberStatusResponse> getExpiredMembers() {
+        return memberService.getExpiredMembers();
+    }
+
+    @GetMapping("/expiring-soon")
+    public List<MemberStatusResponse> getExpiringSoonMembers() {
+        return memberService.getExpiringSoonMembers();
+    }
+
+    @GetMapping("/search")
+    public List<MemberResponse> searchMembers(@RequestParam String query) {
+        return memberService.searchMembers(query);
     }
 
     @DeleteMapping("/{id}")
@@ -40,16 +67,16 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    public Member updateMember(@PathVariable Long id,
-            @RequestBody Member updatedMember) {
+    public MemberResponse updateMember(@PathVariable Long id,
+            @Valid @RequestBody MemberRequest updatedMember) {
 
         return memberService.updateMember(id, updatedMember);
     }
 
     @PutMapping("/{id}/renew")
-    public Membership renewMembership(@PathVariable Long id,
+    public MembershipResponse renewMembership(@PathVariable Long id,
             @Valid @RequestBody RenewRequest request) {
 
-        return memberService.renewMembership(id, request.getPlanType());
+        return membershipService.renewMembership(id, request);
     }
 }

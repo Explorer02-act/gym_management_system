@@ -5,21 +5,32 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-public class RenewRequest {
+public class MembershipRequest {
+
+    @NotNull(message = "Member id is required")
+    private Long memberId;
 
     @NotBlank(message = "Plan type is required")
     private String planType;
+
+    @NotNull(message = "Join date is required")
+    private LocalDate joinDate;
 
     @NotNull(message = "Plan price is required")
     @PositiveOrZero(message = "Plan price cannot be negative")
     private BigDecimal planPrice;
 
-    public RenewRequest() {
+    public MembershipRequest() {
     }
 
-    public RenewRequest(String planType) {
-        this.planType = planType;
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 
     public String getPlanType() {
@@ -28,6 +39,14 @@ public class RenewRequest {
 
     public void setPlanType(String planType) {
         this.planType = planType;
+    }
+
+    public LocalDate getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(LocalDate joinDate) {
+        this.joinDate = joinDate;
     }
 
     public BigDecimal getPlanPrice() {

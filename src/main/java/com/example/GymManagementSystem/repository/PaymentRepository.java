@@ -15,6 +15,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByMemberIdOrderByPaymentDateDescIdDesc(Long memberId);
 
+    @Query("select coalesce(sum(p.amount), 0) from Payment p where p.member.id = :memberId")
+    BigDecimal sumByMemberId(@Param("memberId") Long memberId);
+
     @Query("select coalesce(sum(p.amount), 0) from Payment p where p.paymentDate = :date")
     BigDecimal sumByPaymentDate(@Param("date") LocalDate date);
 
@@ -24,4 +27,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     @Query("select coalesce(sum(p.amount), 0) from Payment p")
     BigDecimal sumLifetime();
+
+    @Query("select p.membership.planType as planName, coalesce(sum(p.amount), 0) as totalRevenue, count(p) as paymentCount " +
+            "from Payment p group by p.membership.planType order by sum(p.amount) desc")
+    List<RevenueByPlanRow> revenueByPlan();
 }

@@ -22,6 +22,8 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
 
     Optional<Membership> findFirstByMemberIdOrderByJoinDateDescIdDesc(Long memberId);
 
+    List<Membership> findByStatusAndExpiryDateBetweenOrderByExpiryDateAsc(String status, LocalDate startDate, LocalDate endDate);
+
     @Query("select count(m) from Membership m where m.status = 'ACTIVE' and m.expiryDate >= :today")
     long countCurrentActiveMemberships(@Param("today") LocalDate today);
 

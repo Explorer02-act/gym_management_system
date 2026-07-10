@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -33,30 +33,12 @@
             </section>
 
             <section class="stats-grid" aria-label="Dashboard statistics">
-                <article class="stat-tile hot">
-                    <span>Total Members</span>
-                    <strong id="totalMembers">0</strong>
-                </article>
-                <article class="stat-tile green">
-                    <span>Active Members</span>
-                    <strong id="activeMembers">0</strong>
-                </article>
-                <article class="stat-tile amber">
-                    <span>Expiring Soon</span>
-                    <strong id="membershipsExpiringSoon">0</strong>
-                </article>
-                <article class="stat-tile blue">
-                    <span>Today Check-ins</span>
-                    <strong id="todaysCheckIns">0</strong>
-                </article>
-                <article class="stat-tile money">
-                    <span>Today Revenue</span>
-                    <strong id="todaysRevenue">Rs 0</strong>
-                </article>
-                <article class="stat-tile money">
-                    <span>Monthly Revenue</span>
-                    <strong id="monthlyRevenue">Rs 0</strong>
-                </article>
+                <article class="stat-tile hot"><span>Total Members</span><strong id="totalMembers">0</strong></article>
+                <article class="stat-tile green"><span>Active Members</span><strong id="activeMembers">0</strong></article>
+                <article class="stat-tile amber"><span>Expiring Soon</span><strong id="membershipsExpiringSoon">0</strong></article>
+                <article class="stat-tile blue"><span>Today Check-ins</span><strong id="todaysCheckIns">0</strong></article>
+                <article class="stat-tile money"><span>Today Revenue</span><strong id="todaysRevenue">Rs 0</strong></article>
+                <article class="stat-tile money"><span>Monthly Revenue</span><strong id="monthlyRevenue">Rs 0</strong></article>
             </section>
 
             <section class="command-strip" id="attendance">
@@ -133,9 +115,11 @@
                         <button id="refreshButton" class="small-button">Refresh</button>
                     </div>
                     <div id="memberResults" class="card-list"></div>
+                    <div id="memberProfile" class="profile-panel"></div>
                 </article>
             </section>
-            <section class="content-grid lower-grid">
+
+            <section class="content-grid lower-grid" id="billing">
                 <article class="panel list-panel">
                     <div class="panel-head">
                         <span class="panel-kicker">Risk queue</span>
@@ -147,7 +131,7 @@
                 <article class="panel list-panel">
                     <div class="panel-head">
                         <span class="panel-kicker">Today</span>
-                        <h2>Check-in board</h2>
+                        <h2>Recent check-ins</h2>
                     </div>
                     <div id="todayAttendance" class="compact-list"></div>
                 </article>
@@ -159,8 +143,18 @@
                     </div>
                     <div class="revenue-stack">
                         <div><span>Yearly</span><strong id="yearlyRevenue">Rs 0</strong></div>
+                        <div><span>Lifetime</span><strong id="lifetimeRevenue">Rs 0</strong></div>
                         <div><span>Expired Members</span><strong id="expiredMembers">0</strong></div>
                     </div>
+                    <div id="revenueByPlan" class="compact-list mini-list"></div>
+                </article>
+
+                <article class="panel list-panel">
+                    <div class="panel-head">
+                        <span class="panel-kicker">Visits</span>
+                        <h2>Leaderboard</h2>
+                    </div>
+                    <div id="attendanceLeaderboard" class="compact-list"></div>
                 </article>
             </section>
         </main>
@@ -170,5 +164,3 @@
     <script src="/app.js"></script>
 </body>
 </html>
-
-

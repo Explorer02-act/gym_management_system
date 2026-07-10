@@ -1,14 +1,17 @@
-const api = {
+﻿const api = {
     stats: "/dashboard/stats",
     members: "/members",
     search: query => `/members/search?query=${encodeURIComponent(query)}`,
-    expiringSoon: "/members/expiring-soon",
-    attendanceToday: "/attendance/today",
+    attendanceRecent: "/attendance/recent",
+    attendanceLeaderboard: "/attendance/leaderboard",
     checkInLookup: "/attendance/checkin-lookup",
-    memberships: "/memberships",
     plans: "/plans",
     settings: "/settings",
-    enrollment: "/enrollment"
+    enrollment: "/enrollment",
+    expiringSevenDays: "/expiring-members/7-days",
+    revenueSummary: "/revenue/summary",
+    profile: memberId => `/members/${memberId}/profile`,
+    receipt: paymentId => `/receipts/payment/${paymentId}`
 };
 
 const money = value => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;
@@ -19,7 +22,7 @@ function showToast(message) {
     const toast = byId("toast");
     toast.textContent = message;
     toast.classList.add("show");
-    window.setTimeout(() => toast.classList.remove("show"), 2800);
+    window.setTimeout(() => toast.classList.remove("show"), 3800);
 }
 
 async function request(path, options = {}) {
@@ -66,9 +69,15 @@ async function loadStats() {
     byId("expiredMembers").textContent = stats.expiredMembers ?? 0;
     byId("membershipsExpiringSoon").textContent = stats.membershipsExpiringSoon ?? 0;
     byId("todaysCheckIns").textContent = stats.todaysCheckIns ?? 0;
-    byId("todaysRevenue").textContent = money(stats.todaysRevenue);
-    byId("monthlyRevenue").textContent = money(stats.monthlyRevenue);
-    byId("yearlyRevenue").textContent = money(stats.yearlyRevenue);
+}
+
+async function loadRevenueSummary() {
+    const summary = await request(api.revenueSummary);
+    byId("todaysRevenue").textContent = money(summary.todaysRevenue);
+    byId("monthlyRevenue").textContent = money(summary.monthlyRevenue);
+    byId("yearlyRevenue").textContent = money(summary.yearlyRevenue);
+    byId("lifetimeRevenue").textContent = money(summary.lifetimeRevenue);
+    renderRevenueByPlan(summary.revenueByPlan || []);
 }
 
 function renderMembers(members) {
@@ -80,6 +89,7 @@ function renderMembers(members) {
 
     container.innerHTML = members.map(member => `
         <article class="member-card">
+            <div class="avatar">${member.photoUrl ? `<img src="${escapeHtml(member.photoUrl)}" alt="">` : initials(member.name)}</div>
             <div>
                 <strong>${escapeHtml(member.name)}</strong>
                 <div class="meta">
@@ -87,9 +97,16 @@ function renderMembers(members) {
                     Emergency: ${escapeHtml(member.emergencyContactName || "Not added")} ${escapeHtml(member.emergencyContactPhone || "")}
                 </div>
             </div>
-            <span class="badge">${escapeHtml(member.memberCode || "NEW")}</span>
+            <div class="member-actions">
+                <span class="badge">${escapeHtml(member.memberCode || "NEW")}</span>
+                <button type="button" class="ghost-button" data-profile-id="${member.id}">Profile</button>
+            </div>
         </article>
     `).join("");
+
+    container.querySelectorAll("[data-profile-id]").forEach(button => {
+        button.addEventListener("click", () => loadMemberProfile(Number(button.dataset.profileId)));
+    });
 }
 
 function renderExpiring(items) {
@@ -104,6 +121,7 @@ function renderExpiring(items) {
             <strong>${escapeHtml(item.member?.name || "Member")}</strong>
             <span class="meta">${escapeHtml(item.member?.memberCode || "")} | ${escapeHtml(item.member?.phone || "")}</span>
             <span class="meta danger">${item.daysRemaining} day(s) left | expires ${escapeHtml(item.expiryDate || "")}</span>
+            ${item.whatsappUrl ? `<a class="action-link" href="${escapeHtml(item.whatsappUrl)}" target="_blank" rel="noreferrer">WhatsApp renewal</a>` : ""}
         </article>
     `).join("");
 }
@@ -118,9 +136,71 @@ function renderAttendance(items) {
     container.innerHTML = items.map(item => `
         <article class="list-row">
             <strong>${escapeHtml(item.member?.name || "Member")}</strong>
-            <span class="meta">${escapeHtml(item.member?.memberCode || "")} | ${formatTime(item.checkInTime)}</span>
+            <span class="meta">${escapeHtml(item.member?.memberCode || "")} | ${escapeHtml(item.attendanceDate || "")} | ${formatTime(item.checkInTime)}</span>
         </article>
     `).join("");
+}
+
+function renderRevenueByPlan(items) {
+    const container = byId("revenueByPlan");
+    if (!items.length) {
+        container.innerHTML = `<div class="list-row"><strong>No plan revenue yet</strong><span class="meta">Payments will group here.</span></div>`;
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <article class="list-row tight-row">
+            <strong>${escapeHtml(item.planName || "Plan")}</strong>
+            <span class="meta">${item.paymentCount || 0} payment(s)</span>
+            <span class="meta">${money(item.totalRevenue)}</span>
+        </article>
+    `).join("");
+}
+
+function renderLeaderboard(items) {
+    const container = byId("attendanceLeaderboard");
+    if (!items.length) {
+        container.innerHTML = `<div class="list-row"><strong>No visits yet</strong><span class="meta">Attendance ranking starts after check-ins.</span></div>`;
+        return;
+    }
+
+    container.innerHTML = items.slice(0, 8).map((item, index) => `
+        <article class="list-row leaderboard-row">
+            <span class="rank">#${index + 1}</span>
+            <div>
+                <strong>${escapeHtml(item.memberName || "Member")}</strong>
+                <span class="meta">${escapeHtml(item.memberCode || "")}</span>
+            </div>
+            <strong>${item.visits || 0}</strong>
+        </article>
+    `).join("");
+}
+
+function renderProfile(profile) {
+    const container = byId("memberProfile");
+    const member = profile.member || {};
+    const current = profile.currentMembership;
+    container.innerHTML = `
+        <article class="profile-card">
+            <div class="profile-top">
+                <div class="avatar large">${member.photoUrl ? `<img src="${escapeHtml(member.photoUrl)}" alt="">` : initials(member.name)}</div>
+                <div>
+                    <span class="panel-kicker">Member profile</span>
+                    <h3>${escapeHtml(member.name || "Member")}</h3>
+                    <span class="meta">${escapeHtml(member.memberCode || "")} | ${escapeHtml(member.phone || "")}</span>
+                </div>
+            </div>
+            <div class="profile-metrics">
+                <div><span>Total visits</span><strong>${profile.totalVisits || 0}</strong></div>
+                <div><span>Revenue</span><strong>${money(profile.revenueGenerated)}</strong></div>
+                <div><span>Expiry</span><strong>${escapeHtml(profile.upcomingExpiry || "-")}</strong></div>
+            </div>
+            <div class="list-row">
+                <strong>${current ? escapeHtml(current.planType || "Current plan") : "No active plan found"}</strong>
+                <span class="meta">${current ? `${escapeHtml(current.status || "")} | ${escapeHtml(current.joinDate || "")} to ${escapeHtml(current.expiryDate || "")}` : "Enroll or renew this member to activate a plan."}</span>
+            </div>
+        </article>
+    `;
 }
 
 function renderPlans(items) {
@@ -166,11 +246,15 @@ async function loadMembers() {
 }
 
 async function loadExpiringSoon() {
-    renderExpiring(await request(api.expiringSoon));
+    renderExpiring(await request(api.expiringSevenDays));
 }
 
 async function loadAttendance() {
-    renderAttendance(await request(api.attendanceToday));
+    renderAttendance(await request(api.attendanceRecent));
+}
+
+async function loadLeaderboard() {
+    renderLeaderboard(await request(api.attendanceLeaderboard));
 }
 
 async function loadPlans() {
@@ -193,12 +277,22 @@ async function loadSettings() {
 async function refreshAll() {
     await Promise.all([
         loadStats(),
+        loadRevenueSummary(),
         loadMembers(),
         loadExpiringSoon(),
         loadAttendance(),
+        loadLeaderboard(),
         loadPlans(),
         loadSettings()
     ]);
+}
+
+async function loadMemberProfile(memberId) {
+    try {
+        renderProfile(await request(api.profile(memberId)));
+    } catch (error) {
+        showToast(error.message);
+    }
 }
 
 function formData(form) {
@@ -218,6 +312,9 @@ function wireForms() {
                 body: JSON.stringify(payload)
             });
             showToast(`Enrolled ${enrollment.member.name} as ${enrollment.member.memberCode}`);
+            if (enrollment.payment?.id) {
+                window.open(api.receipt(enrollment.payment.id), "_blank");
+            }
             form.reset();
             if (plans.length) {
                 selectPlan(plans[0].id);
@@ -277,6 +374,15 @@ function escapeHtml(value) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+function initials(value) {
+    return String(value || "MM")
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0].toUpperCase())
+        .join("");
 }
 
 async function init() {

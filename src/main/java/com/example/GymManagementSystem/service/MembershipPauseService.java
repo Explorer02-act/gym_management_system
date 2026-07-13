@@ -20,11 +20,14 @@ public class MembershipPauseService {
 
     private final MembershipRepository membershipRepository;
     private final MembershipPauseRepository membershipPauseRepository;
+    private final AuditLogService auditLogService;
 
     public MembershipPauseService(MembershipRepository membershipRepository,
-                                  MembershipPauseRepository membershipPauseRepository) {
+                                  MembershipPauseRepository membershipPauseRepository,
+                                  AuditLogService auditLogService) {
         this.membershipRepository = membershipRepository;
         this.membershipPauseRepository = membershipPauseRepository;
+        this.auditLogService = auditLogService;
     }
 
     @Transactional
@@ -67,6 +70,7 @@ public class MembershipPauseService {
 
         membership.setExpiryDate(membership.getExpiryDate().plusDays(pauseDays));
         membershipRepository.save(membership);
+        auditLogService.record("MEMBERSHIP_PAUSED:" + membership.getId());
 
         return MembershipPauseResponse.from(savedPause, membership.getExpiryDate());
     }

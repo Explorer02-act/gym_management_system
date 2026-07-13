@@ -18,7 +18,7 @@ class OfferServiceTest {
     @Test
     void calculateFinalPriceShouldApplyHighestActiveDiscount() {
         OfferRepository offerRepository = mock(OfferRepository.class);
-        OfferService offerService = new OfferService(offerRepository);
+        OfferService offerService = new OfferService(offerRepository, mock(AuditLogService.class));
 
         MembershipPlan plan = new MembershipPlan();
         plan.setDisplayPrice(new BigDecimal("10000"));

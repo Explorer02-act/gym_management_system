@@ -22,7 +22,7 @@ class MembershipPauseServiceTest {
     void pauseMembershipShouldExtendExpiryAndPersistPauseDays() {
         MembershipRepository membershipRepository = mock(MembershipRepository.class);
         MembershipPauseRepository membershipPauseRepository = mock(MembershipPauseRepository.class);
-        MembershipPauseService membershipPauseService = new MembershipPauseService(membershipRepository, membershipPauseRepository);
+        MembershipPauseService membershipPauseService = new MembershipPauseService(membershipRepository, membershipPauseRepository, mock(AuditLogService.class));
 
         Member member = new Member();
         member.setId(1L);

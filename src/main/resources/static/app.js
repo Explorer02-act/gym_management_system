@@ -1,4 +1,4 @@
-﻿const api = {
+const api = {
     stats: "/dashboard/stats",
     members: "/members",
     search: query => `/members/search?query=${encodeURIComponent(query)}`,
@@ -21,6 +21,7 @@
 const money = value => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;
 const byId = id => document.getElementById(id);
 let plans = [];
+let authToken = sessionStorage.getItem("mm_auth_token") || "";
 
 function showToast(message) {
     const toast = byId("toast");
@@ -29,12 +30,56 @@ function showToast(message) {
     window.setTimeout(() => toast.classList.remove("show"), 3800);
 }
 
+
+function clearAuth() {
+    authToken = "";
+    sessionStorage.removeItem("mm_auth_token");
+    document.body.classList.remove("authenticated");
+}
+
+async function login(username, password) {
+    const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
+    if (!response.ok) {
+        let message = "Login failed";
+        try {
+            const error = await response.json();
+            message = error.message || message;
+        } catch (ignored) {
+            // Keep the generic login failure.
+        }
+        throw new Error(message);
+    }
+    const result = await response.json();
+    authToken = result.token;
+    sessionStorage.setItem("mm_auth_token", authToken);
+    document.body.classList.add("authenticated");
+    return result;
+}
+
+async function openReceipt(paymentId) {
+    const response = await fetch(api.receipt(paymentId), {
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {}
+    });
+    if (!response.ok) {
+        throw new Error(response.status === 401 ? "Please login again" : "Unable to open receipt");
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+    window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
 async function request(path, options = {}) {
+    const headers = {
+        "Content-Type": "application/json",
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+        ...(options.headers || {})
+    };
     const response = await fetch(path, {
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        },
+        headers,
         ...options
     });
 
@@ -49,6 +94,7 @@ async function request(path, options = {}) {
         } catch (ignored) {
             // Keep the status-based message when the server did not send JSON.
         }
+        if (response.status === 401) { clearAuth(); }
         throw new Error(message);
     }
 
@@ -225,7 +271,7 @@ function renderPendingDues(items) {
             <strong>${escapeHtml(item.memberName || "Member")}</strong>
             <span class="meta">${escapeHtml(item.memberCode || "")}</span>
             <span class="meta">${escapeHtml(item.planType || "Plan")}</span>
-            <span class="meta danger">${money(item.balanceAmount || 0)} • ${escapeHtml(item.paymentStatus || "PENDING")}</span>
+            <span class="meta danger">${money(item.balanceAmount || 0)} - ${escapeHtml(item.paymentStatus || "PENDING")}</span>
         </article>
     `).join("");
 }
@@ -242,7 +288,7 @@ function renderActiveOffers(items) {
             <span class="badge">Offer</span>
             <strong>${escapeHtml(item.offerName || "Offer")}</strong>
             <span class="meta">${Number(item.discountPercentage || 0)}% off</span>
-            <span class="meta">${escapeHtml(item.startDate || "-")} → ${escapeHtml(item.endDate || "-")}</span>
+            <span class="meta">${escapeHtml(item.startDate || "-")} -> ${escapeHtml(item.endDate || "-")}</span>
         </article>
     `).join("");
 }
@@ -258,7 +304,7 @@ function renderOffers(items) {
         <article class="list-row tight-row offer-row">
             <div>
                 <strong>${escapeHtml(item.offerName || "Offer")}</strong>
-                <span class="meta">${Number(item.discountPercentage || 0)}% off | ${escapeHtml(item.startDate || "-")} → ${escapeHtml(item.endDate || "-")}</span>
+                <span class="meta">${Number(item.discountPercentage || 0)}% off | ${escapeHtml(item.startDate || "-")} -> ${escapeHtml(item.endDate || "-")}</span>
             </div>
             <div class="row-actions">
                 <button type="button" class="small-button" data-offer-edit="${item.id}">Edit</button>
@@ -372,7 +418,7 @@ function renderProfile(profile) {
                 <div class="list-row">
                     <strong>Pause history</strong>
                     ${pauseHistory.length ? pauseHistory.map(item => `
-                        <span class="meta">${escapeHtml(item.pauseStartDate || "-")} → ${escapeHtml(item.pauseEndDate || "-")} | ${item.pauseDays || 0} day(s) | ${escapeHtml(item.reason || "-")} | new expiry ${escapeHtml(item.newExpiryDate || "-")}</span>
+                        <span class="meta">${escapeHtml(item.pauseStartDate || "-")} -> ${escapeHtml(item.pauseEndDate || "-")} | ${item.pauseDays || 0} day(s) | ${escapeHtml(item.reason || "-")} | new expiry ${escapeHtml(item.newExpiryDate || "-")}</span>
                     `).join("") : `<span class="meta">No pauses recorded yet.</span>`}
                 </div>
             ` : ""}
@@ -506,7 +552,7 @@ async function recordMembershipPayment(event) {
         });
         showToast(`Payment recorded for ${payment.memberName || "member"}`);
         if (payment.id) {
-            window.open(api.receipt(payment.id), "_blank");
+            await openReceipt(payment.id);
         }
         await loadMemberProfile(payload.memberId);
         await refreshAll();
@@ -549,7 +595,7 @@ async function renewFromExpiringCard(event) {
         });
         showToast(`Renewed ${renewal.member.name} until ${renewal.membership.expiryDate}`);
         if (renewal.payment?.id) {
-            window.open(api.receipt(renewal.payment.id), "_blank");
+            await openReceipt(renewal.payment.id);
         }
         await refreshAll();
     } catch (error) {
@@ -607,7 +653,7 @@ function wireForms() {
             });
             showToast(`Enrolled ${enrollment.member.name} as ${enrollment.member.memberCode}`);
             if (enrollment.payment?.id) {
-                window.open(api.receipt(enrollment.payment.id), "_blank");
+                await openReceipt(enrollment.payment.id);
             }
             form.reset();
             if (plans.length) {
@@ -703,9 +749,31 @@ function initials(value) {
 }
 
 async function init() {
+    const loginForm = byId("loginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            const data = formData(loginForm);
+            try {
+                const result = await login(data.username, data.password);
+                showToast(`Logged in as ${result.username}`);
+                await refreshAll();
+            } catch (error) {
+                showToast(error.message);
+            }
+        });
+    }
+    if (authToken) {
+        document.body.classList.add("authenticated");
+    }
     setClock();
     window.setInterval(setClock, 30000);
     wireForms();
+
+    if (!authToken) {
+        showToast("Login required");
+        return;
+    }
 
     try {
         const offerList = await request(api.offers);

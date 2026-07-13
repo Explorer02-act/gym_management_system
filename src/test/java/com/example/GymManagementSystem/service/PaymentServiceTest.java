@@ -24,7 +24,7 @@ class PaymentServiceTest {
     void addPaymentShouldUpdateMembershipBalanceAndStatus() {
         MembershipRepository membershipRepository = mock(MembershipRepository.class);
         PaymentRepository paymentRepository = mock(PaymentRepository.class);
-        PaymentService paymentService = new PaymentService(paymentRepository, membershipRepository);
+        PaymentService paymentService = new PaymentService(paymentRepository, membershipRepository, mock(AuditLogService.class));
 
         Member member = new Member();
         member.setId(1L);

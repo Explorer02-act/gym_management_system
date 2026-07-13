@@ -21,10 +21,12 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final MembershipRepository membershipRepository;
+    private final AuditLogService auditLogService;
 
-    public PaymentService(PaymentRepository paymentRepository, MembershipRepository membershipRepository) {
+    public PaymentService(PaymentRepository paymentRepository, MembershipRepository membershipRepository, AuditLogService auditLogService) {
         this.paymentRepository = paymentRepository;
         this.membershipRepository = membershipRepository;
+        this.auditLogService = auditLogService;
     }
 
     @Transactional

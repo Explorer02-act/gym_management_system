@@ -32,17 +32,20 @@ public class EnrollmentService {
     private final MembershipPlanRepository membershipPlanRepository;
     private final PaymentRepository paymentRepository;
     private final OfferService offerService;
+    private final AuditLogService auditLogService;
 
     public EnrollmentService(MemberRepository memberRepository,
                              MembershipRepository membershipRepository,
                              MembershipPlanRepository membershipPlanRepository,
                              PaymentRepository paymentRepository,
-                             OfferService offerService) {
+                             OfferService offerService,
+                             AuditLogService auditLogService) {
         this.memberRepository = memberRepository;
         this.membershipRepository = membershipRepository;
         this.membershipPlanRepository = membershipPlanRepository;
         this.paymentRepository = paymentRepository;
         this.offerService = offerService;
+        this.auditLogService = auditLogService;
     }
 
     @Transactional

@@ -21,9 +21,11 @@ import java.util.Optional;
 public class OfferService {
 
     private final OfferRepository offerRepository;
+    private final AuditLogService auditLogService;
 
-    public OfferService(OfferRepository offerRepository) {
+    public OfferService(OfferRepository offerRepository, AuditLogService auditLogService) {
         this.offerRepository = offerRepository;
+        this.auditLogService = auditLogService;
     }
 
     public List<OfferResponse> getAllOffers() {
@@ -42,7 +44,9 @@ public class OfferService {
 
         Offer offer = new Offer();
         apply(offer, request);
-        return OfferResponse.from(offerRepository.save(offer));
+        Offer saved = offerRepository.save(offer);
+        auditLogService.record("OFFER_CREATED:" + saved.getOfferName());
+        return OfferResponse.from(saved);
     }
 
     @Transactional
@@ -51,7 +55,9 @@ public class OfferService {
                 .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + id));
         validateDates(request.getStartDate(), request.getEndDate());
         apply(offer, request);
-        return OfferResponse.from(offerRepository.save(offer));
+        Offer saved = offerRepository.save(offer);
+        auditLogService.record("OFFER_CREATED:" + saved.getOfferName());
+        return OfferResponse.from(saved);
     }
 
     @Transactional

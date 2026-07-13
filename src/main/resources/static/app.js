@@ -6,12 +6,16 @@
     attendanceLeaderboard: "/attendance/leaderboard",
     checkInLookup: "/attendance/checkin-lookup",
     plans: "/plans",
+    offers: "/offers",
     settings: "/settings",
     enrollment: "/enrollment",
     expiringSevenDays: "/expiring-members/7-days",
     revenueSummary: "/revenue/summary",
     profile: memberId => `/members/${memberId}/profile`,
-    receipt: paymentId => `/receipts/payment/${paymentId}`
+    receipt: paymentId => `/receipts/payment/${paymentId}`,
+    renew: memberId => `/renewals/member/${memberId}`,
+    payments: "/payments/add",
+    pauseMembership: "/membership/pause"
 };
 
 const money = value => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;
@@ -52,7 +56,12 @@ async function request(path, options = {}) {
         return null;
     }
 
-    return response.json();
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+        return response.json();
+    }
+
+    return response.text();
 }
 
 function setClock() {
@@ -69,6 +78,9 @@ async function loadStats() {
     byId("expiredMembers").textContent = stats.expiredMembers ?? 0;
     byId("membershipsExpiringSoon").textContent = stats.membershipsExpiringSoon ?? 0;
     byId("todaysCheckIns").textContent = stats.todaysCheckIns ?? 0;
+    byId("pendingCollections").textContent = money(stats.totalPendingCollections ?? 0);
+    renderPendingDues(stats.membersWithPendingDues || []);
+    renderActiveOffers(stats.activeOffers || []);
 }
 
 async function loadRevenueSummary() {
@@ -100,12 +112,39 @@ function renderMembers(members) {
             <div class="member-actions">
                 <span class="badge">${escapeHtml(member.memberCode || "NEW")}</span>
                 <button type="button" class="ghost-button" data-profile-id="${member.id}">Profile</button>
+                <button type="button" class="ghost-button" data-renew-toggle="${member.id}">Renew</button>
             </div>
+            <form class="renew-form member-renew-form" data-renew-member-id="${member.id}" hidden>
+                <select name="planId" required>
+                    ${plans.map(plan => `<option value="${plan.id}">${escapeHtml(plan.name)} - ${money(plan.displayPrice)}</option>`).join("")}
+                </select>
+                <select name="paymentMode" required>
+                    <option>GPAY</option>
+                    <option>PHONEPE</option>
+                    <option>CASH</option>
+                    <option>CARD</option>
+                </select>
+                <input name="transactionId" placeholder="Transaction ID" required>
+                <button type="submit">Renew Plan</button>
+            </form>
         </article>
     `).join("");
 
     container.querySelectorAll("[data-profile-id]").forEach(button => {
         button.addEventListener("click", () => loadMemberProfile(Number(button.dataset.profileId)));
+    });
+
+    container.querySelectorAll("[data-renew-toggle]").forEach(button => {
+        button.addEventListener("click", () => {
+            const form = container.querySelector(`.member-renew-form[data-renew-member-id="${button.dataset.renewToggle}"]`);
+            if (form) {
+                form.hidden = !form.hidden;
+            }
+        });
+    });
+
+    container.querySelectorAll(".member-renew-form").forEach(form => {
+        form.addEventListener("submit", renewFromExpiringCard);
     });
 }
 
@@ -122,8 +161,25 @@ function renderExpiring(items) {
             <span class="meta">${escapeHtml(item.member?.memberCode || "")} | ${escapeHtml(item.member?.phone || "")}</span>
             <span class="meta danger">${item.daysRemaining} day(s) left | expires ${escapeHtml(item.expiryDate || "")}</span>
             ${item.whatsappUrl ? `<a class="action-link" href="${escapeHtml(item.whatsappUrl)}" target="_blank" rel="noreferrer">WhatsApp renewal</a>` : ""}
+            <form class="renew-form" data-renew-member-id="${item.member?.id || ""}">
+                <select name="planId" required>
+                    ${plans.map(plan => `<option value="${plan.id}">${escapeHtml(plan.name)} - ${money(plan.displayPrice)}</option>`).join("")}
+                </select>
+                <select name="paymentMode" required>
+                    <option>GPAY</option>
+                    <option>PHONEPE</option>
+                    <option>CASH</option>
+                    <option>CARD</option>
+                </select>
+                <input name="transactionId" placeholder="Transaction ID" required>
+                <button type="submit">Renew</button>
+            </form>
         </article>
     `).join("");
+
+    container.querySelectorAll("[data-renew-member-id]").forEach(form => {
+        form.addEventListener("submit", renewFromExpiringCard);
+    });
 }
 
 function renderAttendance(items) {
@@ -157,6 +213,69 @@ function renderRevenueByPlan(items) {
     `).join("");
 }
 
+function renderPendingDues(items) {
+    const container = byId("pendingDuesList");
+    if (!items.length) {
+        container.innerHTML = `<div class="list-row"><strong>No pending dues</strong><span class="meta">Every membership looks settled right now.</span></div>`;
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <article class="list-row tight-row">
+            <strong>${escapeHtml(item.memberName || "Member")}</strong>
+            <span class="meta">${escapeHtml(item.memberCode || "")}</span>
+            <span class="meta">${escapeHtml(item.planType || "Plan")}</span>
+            <span class="meta danger">${money(item.balanceAmount || 0)} • ${escapeHtml(item.paymentStatus || "PENDING")}</span>
+        </article>
+    `).join("");
+}
+
+function renderActiveOffers(items) {
+    const container = byId("activeOffers");
+    if (!items.length) {
+        container.innerHTML = `<div class="list-row"><strong>No active offers</strong><span class="meta">Create offers from the offer management flow.</span></div>`;
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <article class="offer-card">
+            <span class="badge">Offer</span>
+            <strong>${escapeHtml(item.offerName || "Offer")}</strong>
+            <span class="meta">${Number(item.discountPercentage || 0)}% off</span>
+            <span class="meta">${escapeHtml(item.startDate || "-")} → ${escapeHtml(item.endDate || "-")}</span>
+        </article>
+    `).join("");
+}
+
+function renderOffers(items) {
+    const container = byId("offerList");
+    if (!items.length) {
+        container.innerHTML = `<div class="list-row"><strong>No offers yet</strong><span class="meta">Add a seasonal discount to start driving more signups.</span></div>`;
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <article class="list-row tight-row offer-row">
+            <div>
+                <strong>${escapeHtml(item.offerName || "Offer")}</strong>
+                <span class="meta">${Number(item.discountPercentage || 0)}% off | ${escapeHtml(item.startDate || "-")} → ${escapeHtml(item.endDate || "-")}</span>
+            </div>
+            <div class="row-actions">
+                <button type="button" class="small-button" data-offer-edit="${item.id}">Edit</button>
+                <button type="button" class="ghost-button" data-offer-delete="${item.id}">Delete</button>
+            </div>
+        </article>
+    `).join("");
+
+    container.querySelectorAll("[data-offer-edit]").forEach(button => {
+        button.addEventListener("click", () => preloadOfferForm(Number(button.dataset.offerEdit)));
+    });
+
+    container.querySelectorAll("[data-offer-delete]").forEach(button => {
+        button.addEventListener("click", () => deleteOffer(Number(button.dataset.offerDelete)));
+    });
+}
+
 function renderLeaderboard(items) {
     const container = byId("attendanceLeaderboard");
     if (!items.length) {
@@ -180,6 +299,12 @@ function renderProfile(profile) {
     const container = byId("memberProfile");
     const member = profile.member || {};
     const current = profile.currentMembership;
+    const totalAmount = Number(current?.totalAmount || current?.planPrice || 0);
+    const amountPaid = Number(current?.amountPaid || 0);
+    const balanceAmount = Number(current?.balanceAmount || Math.max(totalAmount - amountPaid, 0));
+    const paymentStatus = current?.paymentStatus || "PENDING";
+    const pauseHistory = Array.isArray(profile.pauseHistory) ? profile.pauseHistory : [];
+
     container.innerHTML = `
         <article class="profile-card">
             <div class="profile-top">
@@ -199,8 +324,68 @@ function renderProfile(profile) {
                 <strong>${current ? escapeHtml(current.planType || "Current plan") : "No active plan found"}</strong>
                 <span class="meta">${current ? `${escapeHtml(current.status || "")} | ${escapeHtml(current.joinDate || "")} to ${escapeHtml(current.expiryDate || "")}` : "Enroll or renew this member to activate a plan."}</span>
             </div>
+            ${current ? `
+                <div class="profile-metrics">
+                    <div><span>Total Amount</span><strong>${money(totalAmount)}</strong></div>
+                    <div><span>Paid</span><strong>${money(amountPaid)}</strong></div>
+                    <div><span>Balance</span><strong>${money(balanceAmount)}</strong></div>
+                </div>
+                <div class="list-row">
+                    <strong>Payment status</strong>
+                    <span class="meta">${escapeHtml(paymentStatus)}</span>
+                </div>
+                ${balanceAmount > 0 ? `
+                    <form class="payment-form" data-payment-form data-member-id="${member.id || ""}" data-membership-id="${current.id || ""}">
+                        <label>Complete Remaining Balance
+                            <input name="amount" type="number" min="1" step="1" value="${Math.round(balanceAmount)}" readonly required>
+                        </label>
+                        <label>Payment Mode
+                            <select name="paymentMode" required>
+                                <option>GPAY</option>
+                                <option>PHONEPE</option>
+                                <option>CASH</option>
+                                <option>CARD</option>
+                            </select>
+                        </label>
+                        <label>Transaction ID
+                            <input name="transactionId" placeholder="Reference ID" required>
+                        </label>
+                        <button type="submit">Complete Payment</button>
+                    </form>
+                ` : ""}
+                <div class="list-row">
+                    <strong>Pause membership</strong>
+                    <span class="meta">Extend the expiry date by pausing the current plan without overlap.</span>
+                </div>
+                <form class="pause-form" data-pause-form data-member-id="${member.id || ""}" data-membership-id="${current.id || ""}">
+                    <label>Pause Start Date
+                        <input name="pauseStartDate" type="date" required>
+                    </label>
+                    <label>Pause End Date
+                        <input name="pauseEndDate" type="date" required>
+                    </label>
+                    <label>Reason
+                        <input name="reason" placeholder="Vacation / medical leave" required>
+                    </label>
+                    <button type="submit">Pause Membership</button>
+                </form>
+                <div class="list-row">
+                    <strong>Pause history</strong>
+                    ${pauseHistory.length ? pauseHistory.map(item => `
+                        <span class="meta">${escapeHtml(item.pauseStartDate || "-")} → ${escapeHtml(item.pauseEndDate || "-")} | ${item.pauseDays || 0} day(s) | ${escapeHtml(item.reason || "-")} | new expiry ${escapeHtml(item.newExpiryDate || "-")}</span>
+                    `).join("") : `<span class="meta">No pauses recorded yet.</span>`}
+                </div>
+            ` : ""}
         </article>
     `;
+
+    container.querySelectorAll("[data-payment-form]").forEach(form => {
+        form.addEventListener("submit", recordMembershipPayment);
+    });
+
+    container.querySelectorAll("[data-pause-form]").forEach(form => {
+        form.addEventListener("submit", recordMembershipPause);
+    });
 }
 
 function renderPlans(items) {
@@ -235,6 +420,10 @@ function selectPlan(planId) {
 
     byId("selectedPlanId").value = plan.id;
     byId("paymentAmount").textContent = money(plan.displayPrice);
+    const amountPaidInput = byId("amountPaid");
+    if (amountPaidInput) {
+        amountPaidInput.value = plan.displayPrice;
+    }
 
     document.querySelectorAll(".plan-card").forEach(card => {
         card.classList.toggle("selected", Number(card.dataset.planId) === plan.id);
@@ -274,7 +463,14 @@ async function loadSettings() {
     }
 }
 
+async function loadOffers() {
+    const offers = await request(api.offers);
+    window.offers = offers || [];
+    renderOffers(window.offers);
+}
+
 async function refreshAll() {
+    await loadPlans();
     await Promise.all([
         loadStats(),
         loadRevenueSummary(),
@@ -282,8 +478,8 @@ async function refreshAll() {
         loadExpiringSoon(),
         loadAttendance(),
         loadLeaderboard(),
-        loadPlans(),
-        loadSettings()
+        loadSettings(),
+        loadOffers()
     ]);
 }
 
@@ -293,6 +489,104 @@ async function loadMemberProfile(memberId) {
     } catch (error) {
         showToast(error.message);
     }
+}
+
+async function recordMembershipPayment(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const payload = formData(form);
+    payload.membershipId = Number(form.dataset.membershipId);
+    payload.amount = Number(payload.amount);
+    payload.memberId = Number(form.dataset.memberId);
+
+    try {
+        const payment = await request(api.payments, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        showToast(`Payment recorded for ${payment.memberName || "member"}`);
+        if (payment.id) {
+            window.open(api.receipt(payment.id), "_blank");
+        }
+        await loadMemberProfile(payload.memberId);
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message);
+    }
+}
+
+async function recordMembershipPause(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const payload = formData(form);
+    payload.membershipId = Number(form.dataset.membershipId);
+    payload.memberId = Number(form.dataset.memberId);
+
+    try {
+        const pause = await request(api.pauseMembership, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        showToast(`Membership paused for ${pause.pauseDays || 0} day(s)`);
+        await loadMemberProfile(payload.memberId);
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message);
+    }
+}
+
+async function renewFromExpiringCard(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const memberId = Number(form.dataset.renewMemberId);
+    const payload = formData(form);
+    payload.planId = Number(payload.planId);
+
+    try {
+        const renewal = await request(api.renew(memberId), {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        showToast(`Renewed ${renewal.member.name} until ${renewal.membership.expiryDate}`);
+        if (renewal.payment?.id) {
+            window.open(api.receipt(renewal.payment.id), "_blank");
+        }
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message);
+    }
+}
+
+async function deleteOffer(offerId) {
+    try {
+        const message = await request(`${api.offers}/${offerId}`, {
+            method: "DELETE"
+        });
+        showToast(message || "Offer removed");
+        await loadOffers();
+        await loadStats();
+    } catch (error) {
+        showToast(error.message);
+    }
+}
+
+function preloadOfferForm(offerId) {
+    const offer = (window.offers || []).find(item => Number(item.id) === Number(offerId));
+    if (!offer) return;
+
+    byId("offerId").value = offer.id;
+    byId("offerName").value = offer.offerName || "";
+    byId("discountPercentage").value = offer.discountPercentage || 0;
+    byId("startDate").value = offer.startDate || "";
+    byId("endDate").value = offer.endDate || "";
+    byId("offerActive").checked = Boolean(offer.active);
+    byId("offerSubmitButton").textContent = "Update Offer";
+}
+
+function resetOfferForm() {
+    byId("offerForm").reset();
+    byId("offerId").value = "";
+    byId("offerSubmitButton").textContent = "Add Offer";
 }
 
 function formData(form) {
@@ -352,6 +646,29 @@ function wireForms() {
         }
     });
 
+    byId("offerForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const payload = formData(form);
+        payload.discountPercentage = Number(payload.discountPercentage);
+        payload.active = byId("offerActive").checked;
+
+        try {
+            const method = payload.offerId ? "PUT" : "POST";
+            const url = payload.offerId ? `${api.offers}/${payload.offerId}` : api.offers;
+            const offer = await request(url, {
+                method,
+                body: JSON.stringify(payload)
+            });
+            showToast(`Offer ${offer.offerName || "saved"} updated`);
+            resetOfferForm();
+            await loadOffers();
+            await loadStats();
+        } catch (error) {
+            showToast(error.message);
+        }
+    });
+
     byId("refreshButton").addEventListener("click", async () => {
         try {
             await refreshAll();
@@ -391,6 +708,8 @@ async function init() {
     wireForms();
 
     try {
+        const offerList = await request(api.offers);
+        window.offers = offerList || [];
         await refreshAll();
     } catch (error) {
         showToast(error.message);
@@ -398,3 +717,8 @@ async function init() {
 }
 
 init();
+
+
+
+
+

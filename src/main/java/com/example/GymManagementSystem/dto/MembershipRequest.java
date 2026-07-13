@@ -22,6 +22,9 @@ public class MembershipRequest {
     @PositiveOrZero(message = "Plan price cannot be negative")
     private BigDecimal planPrice;
 
+    @PositiveOrZero(message = "Amount paid cannot be negative")
+    private BigDecimal amountPaid;
+
     public MembershipRequest() {
     }
 
@@ -55,5 +58,13 @@ public class MembershipRequest {
 
     public void setPlanPrice(BigDecimal planPrice) {
         this.planPrice = planPrice;
+    }
+
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(BigDecimal amountPaid) {
+        this.amountPaid = amountPaid;
     }
 }

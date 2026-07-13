@@ -1,8 +1,12 @@
 package com.example.GymManagementSystem.controller;
 
+import com.example.GymManagementSystem.dto.PaymentRequest;
 import com.example.GymManagementSystem.dto.PaymentResponse;
 import com.example.GymManagementSystem.service.PaymentService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +21,11 @@ public class PaymentController {
 
     public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
+    }
+
+    @PostMapping("/add")
+    public PaymentResponse addPayment(@Valid @RequestBody PaymentRequest request) {
+        return paymentService.addPayment(request);
     }
 
     @GetMapping

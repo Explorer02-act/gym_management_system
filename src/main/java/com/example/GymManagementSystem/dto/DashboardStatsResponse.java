@@ -1,6 +1,7 @@
 package com.example.GymManagementSystem.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class DashboardStatsResponse {
 
@@ -14,6 +15,9 @@ public class DashboardStatsResponse {
     private BigDecimal monthlyRevenue;
     private BigDecimal yearlyRevenue;
     private BigDecimal lifetimeRevenue;
+    private BigDecimal totalPendingCollections;
+    private List<PendingDuesResponse> membersWithPendingDues;
+    private List<OfferResponse> activeOffers;
 
     public long getTotalMembers() {
         return totalMembers;
@@ -93,5 +97,29 @@ public class DashboardStatsResponse {
 
     public void setLifetimeRevenue(BigDecimal lifetimeRevenue) {
         this.lifetimeRevenue = lifetimeRevenue;
+    }
+
+    public BigDecimal getTotalPendingCollections() {
+        return totalPendingCollections;
+    }
+
+    public void setTotalPendingCollections(BigDecimal totalPendingCollections) {
+        this.totalPendingCollections = totalPendingCollections;
+    }
+
+    public List<PendingDuesResponse> getMembersWithPendingDues() {
+        return membersWithPendingDues;
+    }
+
+    public void setMembersWithPendingDues(List<PendingDuesResponse> membersWithPendingDues) {
+        this.membersWithPendingDues = membersWithPendingDues;
+    }
+
+    public List<OfferResponse> getActiveOffers() {
+        return activeOffers;
+    }
+
+    public void setActiveOffers(List<OfferResponse> activeOffers) {
+        this.activeOffers = activeOffers;
     }
 }

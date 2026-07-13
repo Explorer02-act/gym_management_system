@@ -3,6 +3,9 @@ package com.example.GymManagementSystem.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
+
+import java.math.BigDecimal;
 
 public class EnrollmentRequest {
 
@@ -23,6 +26,9 @@ public class EnrollmentRequest {
 
     @NotBlank(message = "Transaction id is required")
     private String transactionId;
+
+    @PositiveOrZero(message = "Amount paid cannot be negative")
+    private BigDecimal amountPaid;
 
     private String paymentMode = "GPAY";
 
@@ -72,6 +78,14 @@ public class EnrollmentRequest {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(BigDecimal amountPaid) {
+        this.amountPaid = amountPaid;
     }
 
     public String getPaymentMode() {

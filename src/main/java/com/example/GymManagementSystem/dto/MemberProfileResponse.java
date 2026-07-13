@@ -9,6 +9,7 @@ public class MemberProfileResponse {
     private MemberResponse member;
     private MembershipResponse currentMembership;
     private List<MembershipResponse> membershipHistory;
+    private List<MembershipPauseResponse> pauseHistory;
     private List<AttendanceResponse> attendanceHistory;
     private long totalVisits;
     private BigDecimal revenueGenerated;
@@ -20,6 +21,8 @@ public class MemberProfileResponse {
     public void setCurrentMembership(MembershipResponse currentMembership) { this.currentMembership = currentMembership; }
     public List<MembershipResponse> getMembershipHistory() { return membershipHistory; }
     public void setMembershipHistory(List<MembershipResponse> membershipHistory) { this.membershipHistory = membershipHistory; }
+    public List<MembershipPauseResponse> getPauseHistory() { return pauseHistory; }
+    public void setPauseHistory(List<MembershipPauseResponse> pauseHistory) { this.pauseHistory = pauseHistory; }
     public List<AttendanceResponse> getAttendanceHistory() { return attendanceHistory; }
     public void setAttendanceHistory(List<AttendanceResponse> attendanceHistory) { this.attendanceHistory = attendanceHistory; }
     public long getTotalVisits() { return totalVisits; }

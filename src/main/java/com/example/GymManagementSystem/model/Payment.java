@@ -25,6 +25,8 @@ public class Payment extends AuditableEntity {
 
     private LocalDate paymentDate;
 
+    private String remarks;
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -71,6 +73,14 @@ public class Payment extends AuditableEntity {
 
     public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     public Member getMember() {

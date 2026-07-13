@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,8 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     Optional<Membership> findFirstByMemberIdOrderByJoinDateDescIdDesc(Long memberId);
 
     List<Membership> findByStatusAndExpiryDateBetweenOrderByExpiryDateAsc(String status, LocalDate startDate, LocalDate endDate);
+
+    List<Membership> findByBalanceAmountGreaterThan(BigDecimal amount);
 
     @Query("select count(m) from Membership m where m.status = 'ACTIVE' and m.expiryDate >= :today")
     long countCurrentActiveMemberships(@Param("today") LocalDate today);

@@ -14,16 +14,18 @@ import java.util.List;
 public class MembershipPlanService {
 
     private final MembershipPlanRepository membershipPlanRepository;
+    private final OfferService offerService;
 
-    public MembershipPlanService(MembershipPlanRepository membershipPlanRepository) {
+    public MembershipPlanService(MembershipPlanRepository membershipPlanRepository, OfferService offerService) {
         this.membershipPlanRepository = membershipPlanRepository;
+        this.offerService = offerService;
     }
 
     public List<MembershipPlanResponse> getActivePlans() {
         seedDefaultPlansIfEmpty();
         return membershipPlanRepository.findByActiveTrueOrderByDurationMonthsAsc()
                 .stream()
-                .map(MembershipPlanResponse::from)
+                .map(this::toResponse)
                 .toList();
     }
 
@@ -31,21 +33,21 @@ public class MembershipPlanService {
         seedDefaultPlansIfEmpty();
         return membershipPlanRepository.findAll()
                 .stream()
-                .map(MembershipPlanResponse::from)
+                .map(this::toResponse)
                 .toList();
     }
 
     public MembershipPlanResponse createPlan(MembershipPlanRequest request) {
         MembershipPlan plan = new MembershipPlan();
         apply(plan, request);
-        return MembershipPlanResponse.from(membershipPlanRepository.save(plan));
+        return toResponse(membershipPlanRepository.save(plan));
     }
 
     public MembershipPlanResponse updatePlan(Long id, MembershipPlanRequest request) {
         MembershipPlan plan = membershipPlanRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Membership plan not found with id " + id));
         apply(plan, request);
-        return MembershipPlanResponse.from(membershipPlanRepository.save(plan));
+        return toResponse(membershipPlanRepository.save(plan));
     }
 
     public void deletePlan(Long id) {
@@ -53,6 +55,12 @@ public class MembershipPlanService {
                 .orElseThrow(() -> new ResourceNotFoundException("Membership plan not found with id " + id));
         plan.setActive(false);
         membershipPlanRepository.save(plan);
+    }
+
+    private MembershipPlanResponse toResponse(MembershipPlan plan) {
+        MembershipPlanResponse response = MembershipPlanResponse.from(plan);
+        response.setDisplayPrice(offerService.calculateFinalPrice(plan));
+        return response;
     }
 
     private void apply(MembershipPlan plan, MembershipPlanRequest request) {

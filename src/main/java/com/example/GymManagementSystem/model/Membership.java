@@ -27,6 +27,14 @@ public class Membership extends AuditableEntity {
 
     private BigDecimal planPrice;
 
+    private BigDecimal totalAmount;
+
+    private BigDecimal amountPaid;
+
+    private BigDecimal balanceAmount;
+
+    private String paymentStatus;
+
     @ManyToOne
     @JoinColumn(name = "plan_id")
     private MembershipPlan plan;
@@ -101,6 +109,38 @@ public class Membership extends AuditableEntity {
         this.planPrice = planPrice;
     }
 
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(BigDecimal amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public BigDecimal getBalanceAmount() {
+        return balanceAmount;
+    }
+
+    public void setBalanceAmount(BigDecimal balanceAmount) {
+        this.balanceAmount = balanceAmount;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
     public MembershipPlan getPlan() {
         return plan;
     }
@@ -115,5 +155,28 @@ public class Membership extends AuditableEntity {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public void applyPayment(BigDecimal paymentAmount, BigDecimal totalAmount) {
+        BigDecimal safeTotal = totalAmount == null ? BigDecimal.ZERO : totalAmount;
+        BigDecimal safePaid = amountPaid == null ? BigDecimal.ZERO : amountPaid;
+        BigDecimal updatedPaid = safePaid.add(paymentAmount);
+        this.amountPaid = updatedPaid;
+        this.totalAmount = safeTotal;
+        this.balanceAmount = safeTotal.subtract(updatedPaid).max(BigDecimal.ZERO);
+        this.paymentStatus = resolvePaymentStatus(safeTotal, updatedPaid);
+    }
+
+    public static String resolvePaymentStatus(BigDecimal totalAmount, BigDecimal amountPaid) {
+        BigDecimal safeTotal = totalAmount == null ? BigDecimal.ZERO : totalAmount;
+        BigDecimal safePaid = amountPaid == null ? BigDecimal.ZERO : amountPaid;
+
+        if (safePaid.compareTo(safeTotal) >= 0) {
+            return "PAID";
+        }
+        if (safePaid.compareTo(BigDecimal.ZERO) <= 0) {
+            return "PENDING";
+        }
+        return "PARTIAL";
     }
 }

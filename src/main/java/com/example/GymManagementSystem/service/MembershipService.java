@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Service
@@ -63,6 +64,21 @@ public class MembershipService {
                 member
         );
 
+        BigDecimal totalAmount = request.getPlanPrice() == null ? BigDecimal.ZERO : request.getPlanPrice();
+        BigDecimal amountPaid = request.getAmountPaid() == null ? BigDecimal.ZERO : request.getAmountPaid();
+
+        if (amountPaid.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BadRequestException("Amount paid cannot be negative");
+        }
+        if (amountPaid.compareTo(totalAmount) > 0) {
+            throw new BadRequestException("Amount paid cannot exceed plan price");
+        }
+
+        membership.setTotalAmount(totalAmount);
+        membership.setAmountPaid(amountPaid);
+        membership.setBalanceAmount(totalAmount.subtract(amountPaid).max(BigDecimal.ZERO));
+        membership.setPaymentStatus(Membership.resolvePaymentStatus(totalAmount, amountPaid));
+
         return MembershipResponse.from(membershipRepository.save(membership));
     }
 
@@ -99,11 +115,12 @@ public class MembershipService {
     }
 
     private LocalDate calculateExpiryDate(MembershipRequest request) {
-        return switch (request.getPlanType()) {
-            case "1 Month" -> request.getJoinDate().plusMonths(1);
-            case "3 Month" -> request.getJoinDate().plusMonths(3);
-            case "6 Month" -> request.getJoinDate().plusMonths(6);
-            case "12 Month" -> request.getJoinDate().plusMonths(12);
+        String planType = request.getPlanType().trim().toUpperCase();
+        return switch (planType) {
+            case "1 MONTH" -> request.getJoinDate().plusMonths(1);
+            case "3 MONTH" -> request.getJoinDate().plusMonths(3);
+            case "6 MONTH" -> request.getJoinDate().plusMonths(6);
+            case "12 MONTH" -> request.getJoinDate().plusMonths(12);
             default -> throw new BadRequestException("Unsupported plan type: " + request.getPlanType());
         };
     }
@@ -115,4 +132,5 @@ public class MembershipService {
         return id;
     }
 }
+
 

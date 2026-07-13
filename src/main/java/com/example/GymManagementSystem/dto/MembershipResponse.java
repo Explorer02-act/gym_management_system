@@ -13,6 +13,10 @@ public class MembershipResponse {
     private LocalDate expiryDate;
     private String status;
     private BigDecimal planPrice;
+    private BigDecimal totalAmount;
+    private BigDecimal amountPaid;
+    private BigDecimal balanceAmount;
+    private String paymentStatus;
     private MemberResponse member;
 
     public static MembershipResponse from(Membership membership) {
@@ -23,6 +27,10 @@ public class MembershipResponse {
         response.setExpiryDate(membership.getExpiryDate());
         response.setStatus(membership.getStatus());
         response.setPlanPrice(membership.getPlanPrice());
+        response.setTotalAmount(membership.getTotalAmount());
+        response.setAmountPaid(membership.getAmountPaid());
+        response.setBalanceAmount(membership.getBalanceAmount());
+        response.setPaymentStatus(membership.getPaymentStatus());
         response.setMember(MemberResponse.from(membership.getMember()));
         return response;
     }
@@ -73,6 +81,38 @@ public class MembershipResponse {
 
     public void setPlanPrice(BigDecimal planPrice) {
         this.planPrice = planPrice;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(BigDecimal amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public BigDecimal getBalanceAmount() {
+        return balanceAmount;
+    }
+
+    public void setBalanceAmount(BigDecimal balanceAmount) {
+        this.balanceAmount = balanceAmount;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public MemberResponse getMember() {

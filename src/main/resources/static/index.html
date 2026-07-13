@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -9,7 +9,10 @@
 <body>
     <div class="shell">
         <aside class="brand-rail">
-            <div class="brand-mark">MM</div>
+            <div class="brand-identity">
+                <img class="brand-logo" src="/assets/muscle-monsterz-gym.jpeg" alt="MUSCLE MONSTERZ logo">
+                <div class="brand-mark">MM</div>
+            </div>
             <nav class="rail-nav" aria-label="Main sections">
                 <a href="#dashboard" class="active">Dashboard</a>
                 <a href="#members">Members</a>
@@ -25,6 +28,7 @@
                     <h1>MUSCLE MONSTERZ</h1>
                     <p class="stage-line">Members, renewals, check-ins, and revenue in one sharp screen.</p>
                 </div>
+                <img class="hero-photo" src="/assets/muscle-monsterz-gym.jpeg" alt="MUSCLE MONSTERZ fitness centre sign">
                 <div class="stage-card">
                     <span class="pulse-dot"></span>
                     <strong id="clock">Ready</strong>
@@ -39,6 +43,43 @@
                 <article class="stat-tile blue"><span>Today Check-ins</span><strong id="todaysCheckIns">0</strong></article>
                 <article class="stat-tile money"><span>Today Revenue</span><strong id="todaysRevenue">Rs 0</strong></article>
                 <article class="stat-tile money"><span>Monthly Revenue</span><strong id="monthlyRevenue">Rs 0</strong></article>
+                <article class="stat-tile money"><span>Pending Collections</span><strong id="pendingCollections">Rs 0</strong></article>
+            </section>
+
+            <section class="offer-strip panel" aria-label="Active offers">
+                <div class="panel-head row">
+                    <div>
+                        <span class="panel-kicker">Offers</span>
+                        <h2>Active deals</h2>
+                    </div>
+                </div>
+                <div id="activeOffers" class="offer-grid"></div>
+            </section>
+
+            <section class="content-grid lower-grid" id="offerManagement">
+                <article class="panel form-panel">
+                    <div class="panel-head">
+                        <span class="panel-kicker">Create / update</span>
+                        <h2>Offer management</h2>
+                    </div>
+                    <form id="offerForm" class="stack-form">
+                        <input id="offerId" name="offerId" type="hidden">
+                        <label>Offer Name<input id="offerName" name="offerName" placeholder="Diwali Offer" required></label>
+                        <label>Discount %<input id="discountPercentage" name="discountPercentage" type="number" min="0" max="100" step="1" placeholder="10" required></label>
+                        <label>Start Date<input id="startDate" name="startDate" type="date" required></label>
+                        <label>End Date<input id="endDate" name="endDate" type="date" required></label>
+                        <label><input id="offerActive" name="active" type="checkbox" checked> Active</label>
+                        <button id="offerSubmitButton" type="submit">Add Offer</button>
+                    </form>
+                </article>
+
+                <article class="panel list-panel">
+                    <div class="panel-head">
+                        <span class="panel-kicker">Directory</span>
+                        <h2>All offers</h2>
+                    </div>
+                    <div id="offerList" class="compact-list"></div>
+                </article>
             </section>
 
             <section class="command-strip" id="attendance">
@@ -92,6 +133,7 @@
                             <div id="qrPreview" class="qr-preview">QR</div>
                         </div>
                         <div class="form-columns">
+                            <label>Amount Paid<input id="amountPaid" name="amountPaid" type="number" min="1" step="1" placeholder="Enter amount paid" required></label>
                             <label>Transaction ID<input name="transactionId" placeholder="Reference ID after payment" required></label>
                             <label>Payment Mode
                                 <select name="paymentMode" required>
@@ -130,6 +172,14 @@
 
                 <article class="panel list-panel">
                     <div class="panel-head">
+                        <span class="panel-kicker">Collections</span>
+                        <h2>Pending Dues</h2>
+                    </div>
+                    <div id="pendingDuesList" class="compact-list"></div>
+                </article>
+
+                <article class="panel list-panel">
+                    <div class="panel-head">
                         <span class="panel-kicker">Today</span>
                         <h2>Recent check-ins</h2>
                     </div>
@@ -164,3 +214,4 @@
     <script src="/app.js"></script>
 </body>
 </html>
+

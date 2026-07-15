@@ -8,8 +8,10 @@ import com.example.GymManagementSystem.exception.DuplicateResourceException;
 import com.example.GymManagementSystem.exception.ResourceNotFoundException;
 import com.example.GymManagementSystem.model.Member;
 import com.example.GymManagementSystem.model.Membership;
+import com.example.GymManagementSystem.repository.AttendanceRepository;
 import com.example.GymManagementSystem.repository.MemberRepository;
 import com.example.GymManagementSystem.repository.MembershipRepository;
+import com.example.GymManagementSystem.repository.MembershipPauseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +26,17 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MembershipRepository membershipRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final MembershipPauseRepository membershipPauseRepository;
 
     public MemberService(MemberRepository memberRepository,
-                         MembershipRepository membershipRepository) {
+                         MembershipRepository membershipRepository,
+                         AttendanceRepository attendanceRepository,
+                         MembershipPauseRepository membershipPauseRepository) {
         this.memberRepository = memberRepository;
         this.membershipRepository = membershipRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.membershipPauseRepository = membershipPauseRepository;
     }
 
     @Transactional
@@ -54,12 +62,17 @@ public class MemberService {
                 .toList();
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         Long memberId = requireId(id, "Member id is required");
 
         if (!memberRepository.existsById(memberId)) {
             throw new ResourceNotFoundException("Member not found with id " + memberId);
         }
+        // Keep payments for revenue tracking - only delete member data
+        membershipPauseRepository.deleteByMembershipMemberId(memberId);
+        attendanceRepository.deleteByMemberId(memberId);
+        membershipRepository.deleteByMemberId(memberId);
         memberRepository.deleteById(memberId);
     }
 
@@ -187,3 +200,4 @@ public class MemberService {
         return id;
     }
 }
+

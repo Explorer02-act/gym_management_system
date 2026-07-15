@@ -10,6 +10,10 @@ public class RevenueSummaryResponse {
     private BigDecimal monthlyRevenue;
     private BigDecimal yearlyRevenue;
     private BigDecimal lifetimeRevenue;
+    private BigDecimal todaysCashRevenue;
+    private BigDecimal todaysUpiRevenue;
+    private BigDecimal monthlyCashRevenue;
+    private BigDecimal monthlyUpiRevenue;
     private List<RevenueByPlanResponse> revenueByPlan;
 
     public BigDecimal getTodaysRevenue() { return todaysRevenue; }
@@ -22,6 +26,14 @@ public class RevenueSummaryResponse {
     public void setYearlyRevenue(BigDecimal yearlyRevenue) { this.yearlyRevenue = yearlyRevenue; }
     public BigDecimal getLifetimeRevenue() { return lifetimeRevenue; }
     public void setLifetimeRevenue(BigDecimal lifetimeRevenue) { this.lifetimeRevenue = lifetimeRevenue; }
+    public BigDecimal getTodaysCashRevenue() { return todaysCashRevenue; }
+    public void setTodaysCashRevenue(BigDecimal todaysCashRevenue) { this.todaysCashRevenue = todaysCashRevenue; }
+    public BigDecimal getTodaysUpiRevenue() { return todaysUpiRevenue; }
+    public void setTodaysUpiRevenue(BigDecimal todaysUpiRevenue) { this.todaysUpiRevenue = todaysUpiRevenue; }
+    public BigDecimal getMonthlyCashRevenue() { return monthlyCashRevenue; }
+    public void setMonthlyCashRevenue(BigDecimal monthlyCashRevenue) { this.monthlyCashRevenue = monthlyCashRevenue; }
+    public BigDecimal getMonthlyUpiRevenue() { return monthlyUpiRevenue; }
+    public void setMonthlyUpiRevenue(BigDecimal monthlyUpiRevenue) { this.monthlyUpiRevenue = monthlyUpiRevenue; }
     public List<RevenueByPlanResponse> getRevenueByPlan() { return revenueByPlan; }
     public void setRevenueByPlan(List<RevenueByPlanResponse> revenueByPlan) { this.revenueByPlan = revenueByPlan; }
 }

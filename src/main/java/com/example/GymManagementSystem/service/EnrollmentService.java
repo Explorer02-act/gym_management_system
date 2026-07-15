@@ -85,7 +85,7 @@ public class EnrollmentService {
             membershipRepository.save(activeMembership);
         }
 
-        LocalDate joinDate = LocalDate.now();
+        LocalDate joinDate = request.getJoinDate() == null ? LocalDate.now() : request.getJoinDate();
         LocalDate expiryDate = joinDate.plusMonths(plan.getDurationMonths());
 
         Membership membership = new Membership(
@@ -120,3 +120,4 @@ public class EnrollmentService {
         return response;
     }
 }
+

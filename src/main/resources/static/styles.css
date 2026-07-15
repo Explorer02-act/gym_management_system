@@ -109,8 +109,8 @@ select option {
 }
 
 .brand-logo {
-    width: 92px;
-    height: 118px;
+    width: 160px;
+    height: 200px;
     object-fit: cover;
     object-position: center 42%;
     border-radius: 14px;
@@ -565,6 +565,121 @@ label {
     transform: translateY(0);
 }
 
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal:not([hidden]) {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--panel-strong);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: var(--ink);
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.receipt-frame {
+    width: 100%;
+    height: 400px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--line);
+    justify-content: flex-end;
+}
+
+.whatsapp-button {
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.whatsapp-button:hover {
+    background: #20BD5A;
+}
+
+.secondary-button {
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.secondary-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 @media (max-width: 1180px) {
     .shell {
         grid-template-columns: 1fr;
@@ -670,6 +785,12 @@ label {
     box-shadow: none;
 }
 
+
+.danger-button {
+    border-color: rgba(255, 47, 79, 0.5);
+    color: #ffd7de;
+    background: rgba(255, 47, 79, 0.14);
+}
 .profile-panel {
     margin-top: 12px;
 }
@@ -687,6 +808,10 @@ label {
     display: flex;
     gap: 12px;
     align-items: center;
+}
+
+.profile-top .danger-button {
+    margin-left: auto;
 }
 
 .profile-top h3 {
@@ -827,11 +952,11 @@ label {
 .hero-photo {
     position: absolute;
     z-index: 1;
-    right: 44px;
-    top: 18px;
-    bottom: 18px;
-    width: min(26vw, 310px);
-    height: calc(100% - 36px);
+    right: 28px;
+    top: 10px;
+    bottom: 10px;
+    width: min(36vw, 470px);
+    height: calc(100% - 20px);
     object-fit: contain;
     object-position: center;
     border-radius: 8px;
@@ -859,7 +984,7 @@ label {
         top: auto;
         bottom: auto;
         width: 100%;
-        height: 220px;
+        height: 260px;
         grid-row: 2;
     }
 
@@ -908,3 +1033,40 @@ body.authenticated .auth-screen {
     font-size: 34px;
     line-height: 0.95;
 }
+
+
+
+.inline-check {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 10px;
+    min-height: 34px;
+    padding: 6px 0;
+}
+
+.inline-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    min-height: 0;
+    accent-color: var(--lime);
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.form-actions button {
+    flex: 1 1 150px;
+}
+
+.row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+

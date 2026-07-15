@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MUSCLE MONSTERZ | Gym Command Center</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css?v=4">
 </head>
 <body>
     <section id="authScreen" class="auth-screen">
@@ -75,11 +75,17 @@
                     <form id="offerForm" class="stack-form">
                         <input id="offerId" name="offerId" type="hidden">
                         <label>Offer Name<input id="offerName" name="offerName" placeholder="Diwali Offer" required></label>
-                        <label>Discount %<input id="discountPercentage" name="discountPercentage" type="number" min="0" max="100" step="1" placeholder="10" required></label>
+                        <div class="offer-discount-grid">
+                            <label>Discount %<input id="discountPercentage" name="discountPercentage" type="number" min="0" max="100" step="1" placeholder="10"></label>
+                            <label>Cash Off (Rs)<input id="discountAmount" name="discountAmount" type="number" min="0" step="1" placeholder="500"></label>
+                        </div>
                         <label>Start Date<input id="startDate" name="startDate" type="date" required></label>
                         <label>End Date<input id="endDate" name="endDate" type="date" required></label>
-                        <label><input id="offerActive" name="active" type="checkbox" checked> Active</label>
-                        <button id="offerSubmitButton" type="submit">Add Offer</button>
+                        <label class="inline-check"><input id="offerActive" name="active" type="checkbox" checked> Active</label>
+                        <div class="form-actions">
+                            <button type="button" id="clearOfferButton" class="secondary-button">Clear / Add New</button>
+                            <button id="offerSubmitButton" type="submit">Add Offer</button>
+                        </div>
                     </form>
                 </article>
 
@@ -126,6 +132,7 @@
                         <div class="form-columns">
                             <label>Name<input name="name" required></label>
                             <label>Phone<input name="phone" pattern="[0-9]{10}" required></label>
+                            <label>Join Date<input id="joinDate" name="joinDate" type="date"></label>
                             <label>Emergency Contact<input name="emergencyContactName"></label>
                             <label>Emergency Phone<input name="emergencyContactPhone" pattern="[0-9]{10}"></label>
                         </div>
@@ -144,9 +151,9 @@
                         </div>
                         <div class="form-columns">
                             <label>Amount Paid<input id="amountPaid" name="amountPaid" type="number" min="1" step="1" placeholder="Enter amount paid" required></label>
-                            <label>Transaction ID<input name="transactionId" placeholder="Reference ID after payment" required></label>
+                            <label>Transaction ID<input id="enrollmentTransactionId" name="transactionId" placeholder="Reference ID after payment"></label>
                             <label>Payment Mode
-                                <select name="paymentMode" required>
+                                <select id="enrollmentPaymentMode" name="paymentMode" required>
                                     <option>GPAY</option>
                                     <option>PHONEPE</option>
                                     <option>CASH</option>
@@ -206,6 +213,12 @@
                         <div><span>Lifetime</span><strong id="lifetimeRevenue">Rs 0</strong></div>
                         <div><span>Expired Members</span><strong id="expiredMembers">0</strong></div>
                     </div>
+                    <div class="revenue-stack">
+                        <div><span>Today Cash</span><strong id="todaysCashRevenue">Rs 0</strong></div>
+                        <div><span>Today UPI</span><strong id="todaysUpiRevenue">Rs 0</strong></div>
+                        <div><span>Monthly Cash</span><strong id="monthlyCashRevenue">Rs 0</strong></div>
+                        <div><span>Monthly UPI</span><strong id="monthlyUpiRevenue">Rs 0</strong></div>
+                    </div>
                     <div id="revenueByPlan" class="compact-list mini-list"></div>
                 </article>
 
@@ -220,8 +233,31 @@
         </main>
     </div>
 
+    <div id="receiptModal" class="modal" hidden>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Receipt</h3>
+                <button type="button" class="close-button" id="closeReceiptModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="receiptFrame" class="receipt-frame"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="whatsapp-button" id="shareWhatsApp">
+                    <span>Share via WhatsApp</span>
+                </button>
+                <button type="button" class="secondary-button" id="downloadReceipt">Download</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <script src="/app.js"></script>
 </body>
 </html>
+
+
+
+
+
 

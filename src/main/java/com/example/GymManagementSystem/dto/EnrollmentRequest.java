@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class EnrollmentRequest {
 
@@ -24,7 +25,8 @@ public class EnrollmentRequest {
     @NotNull(message = "Plan id is required")
     private Long planId;
 
-    @NotBlank(message = "Transaction id is required")
+    private LocalDate joinDate;
+
     private String transactionId;
 
     @PositiveOrZero(message = "Amount paid cannot be negative")
@@ -72,6 +74,14 @@ public class EnrollmentRequest {
         this.planId = planId;
     }
 
+    public LocalDate getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(LocalDate joinDate) {
+        this.joinDate = joinDate;
+    }
+
     public String getTransactionId() {
         return transactionId;
     }
@@ -96,3 +106,5 @@ public class EnrollmentRequest {
         this.paymentMode = paymentMode;
     }
 }
+
+

@@ -13,11 +13,13 @@ import java.util.Optional;
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
 
     List<Membership> findByMemberIdAndStatus(Long memberId,
-                                         String status);
+                                             String status);
 
     List<Membership> findByStatus(String status);
-    
+
     List<Membership> findByMemberId(Long memberId);
+
+    void deleteByMemberId(Long memberId);
 
     List<Membership> findByMemberIdOrderByJoinDateDescIdDesc(Long memberId);
 

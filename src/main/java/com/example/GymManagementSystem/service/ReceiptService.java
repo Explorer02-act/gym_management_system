@@ -95,8 +95,8 @@ public class ReceiptService {
                                    String gymName,
                                    Payment payment) throws IOException {
         if (logo != null) {
-            drawLineBox(content, MARGIN + 18, PAGE_HEIGHT - 244, 112, 190);
-            drawImageContained(content, logo, MARGIN + 22, PAGE_HEIGHT - 240, 104, 182);
+            drawLineBox(content, MARGIN + 14, PAGE_HEIGHT - 254, 124, 184);
+            drawImageContained(content, logo, MARGIN + 18, PAGE_HEIGHT - 250, 116, 176);
         }
 
         drawCentered(content, gymName.toUpperCase(), 22, PAGE_HEIGHT - 82, PDType1Font.HELVETICA_BOLD);
@@ -369,3 +369,5 @@ public class ReceiptService {
         return value == null ? "-" : value.replace("ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹", "Rs").replace("ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢", "-").replace("ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢", "->");
     }
 }
+
+

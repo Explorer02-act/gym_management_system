@@ -26,6 +26,10 @@ public class RevenueAnalyticsService {
         response.setMonthlyRevenue(paymentRepository.sumBetween(today.withDayOfMonth(1), today));
         response.setYearlyRevenue(paymentRepository.sumBetween(today.withDayOfYear(1), today));
         response.setLifetimeRevenue(paymentRepository.sumLifetime());
+        response.setTodaysCashRevenue(paymentRepository.sumCashByPaymentDate(today));
+        response.setTodaysUpiRevenue(paymentRepository.sumUpiByPaymentDate(today));
+        response.setMonthlyCashRevenue(paymentRepository.sumCashBetween(today.withDayOfMonth(1), today));
+        response.setMonthlyUpiRevenue(paymentRepository.sumUpiBetween(today.withDayOfMonth(1), today));
         response.setRevenueByPlan(getRevenueByPlan());
         return response;
     }

@@ -12,6 +12,8 @@ public interface MembershipPauseRepository extends JpaRepository<MembershipPause
 
     List<MembershipPause> findByMembershipIdOrderByPauseStartDateDescIdDesc(Long membershipId);
 
+    void deleteByMembershipMemberId(Long memberId);
+
     List<MembershipPause> findByPauseStartDateLessThanEqualAndPauseEndDateGreaterThanEqual(LocalDate pauseStartDate,
                                                                                          LocalDate pauseEndDate);
 
@@ -23,3 +25,4 @@ public interface MembershipPauseRepository extends JpaRepository<MembershipPause
                           @Param("pauseStartDate") LocalDate pauseStartDate,
                           @Param("pauseEndDate") LocalDate pauseEndDate);
 }
+

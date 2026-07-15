@@ -9,7 +9,7 @@
 [INFO] 
 [INFO] --- resources:3.3.1:resources (default-resources) @ GymManagementSystem ---
 [INFO] Copying 1 resource from src\main\resources to target\classes
-[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO] Copying 5 resources from src\main\resources to target\classes
 [INFO] 
 [INFO] --- compiler:3.13.0:compile (default-compile) @ GymManagementSystem ---
 [INFO] Nothing to compile - all classes are up to date.
@@ -34,48 +34,51 @@
 
  :: Spring Boot ::                (v3.3.0)
 
-2026-07-10T13:16:16.486+05:30  INFO 29924 --- [GymManagementSystem] [           main] c.e.G.GymManagementSystemApplication     : Starting GymManagementSystemApplication using Java 17.0.11 with PID 29924 (A:\Da Vinci\java_workshop\springboot_intro\GymManagementSystem\target\classes started by sadhm in A:\Da Vinci\java_workshop\springboot_intro\GymManagementSystem)
-2026-07-10T13:16:16.490+05:30  INFO 29924 --- [GymManagementSystem] [           main] c.e.G.GymManagementSystemApplication     : No active profile set, falling back to 1 default profile: "default"
-2026-07-10T13:16:16.491+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.boot.SpringApplication               : Loading source class com.example.GymManagementSystem.GymManagementSystemApplication
-2026-07-10T13:16:16.562+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@782859e
-2026-07-10T13:16:17.429+05:30  INFO 29924 --- [GymManagementSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-07-10T13:16:17.454+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.example.GymManagementSystem'. Automatic @Repository and @Entity scanning is enabled.
-2026-07-10T13:16:17.511+05:30  INFO 29924 --- [GymManagementSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 72 ms. Found 3 JPA repository interfaces.
-2026-07-10T13:16:18.337+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\sadhm\.m2\repository\org\springframework\boot\spring-boot\3.3.0\spring-boot-3.3.0.jar
-2026-07-10T13:16:18.338+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\sadhm\.m2\repository\org\springframework\boot\spring-boot\3.3.0\spring-boot-3.3.0.jar
-2026-07-10T13:16:18.339+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2026-07-10T13:16:18.376+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2026-07-10T13:16:18.408+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-07-10T13:16:18.408+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.24]
-2026-07-10T13:16:18.517+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-07-10T13:16:18.518+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] w.s.c.ServletWebServerApplicationContext : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2026-07-10T13:16:18.519+05:30  INFO 29924 --- [GymManagementSystem] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1956 ms
-2026-07-10T13:16:18.535+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105
-2026-07-10T13:16:18.536+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
-2026-07-10T13:16:18.567+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.b.w.s.f.OrderedRequestContextFilter  : Filter 'requestContextFilter' configured for use
-2026-07-10T13:16:18.569+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] s.b.w.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
-2026-07-10T13:16:18.570+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.b.w.s.f.OrderedFormContentFilter     : Filter 'formContentFilter' configured for use
-2026-07-10T13:16:18.716+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-07-10T13:16:18.833+05:30  INFO 29924 --- [GymManagementSystem] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
-2026-07-10T13:16:18.899+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-07-10T13:16:19.323+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-07-10T13:16:19.365+05:30  INFO 29924 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-07-10T13:16:19.847+05:30  INFO 29924 --- [GymManagementSystem] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@c318864
-2026-07-10T13:16:19.850+05:30  INFO 29924 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-07-10T13:16:21.409+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-07-10T13:16:21.526+05:30  INFO 29924 --- [GymManagementSystem] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-07-10T13:16:22.078+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-07-10T13:16:22.732+05:30  WARN 29924 --- [GymManagementSystem] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-07-10T13:16:22.760+05:30  INFO 29924 --- [GymManagementSystem] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2026-07-10T13:16:22.871+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 19 mappings in 'requestMappingHandlerMapping'
-2026-07-10T13:16:22.989+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2026-07-10T13:16:23.039+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2026-07-10T13:16:23.091+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
-2026-07-10T13:16:23.232+05:30  WARN 29924 --- [GymManagementSystem] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
-2026-07-10T13:16:23.235+05:30  INFO 29924 --- [GymManagementSystem] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-07-10T13:16:23.238+05:30  INFO 29924 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-07-10T13:16:23.253+05:30  INFO 29924 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-07-10T13:16:23.286+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-07-15T11:39:02.496+05:30  INFO 10216 --- [GymManagementSystem] [           main] c.e.G.GymManagementSystemApplication     : Starting GymManagementSystemApplication using Java 17.0.11 with PID 10216 (A:\Da Vinci\java_workshop\springboot_intro\GymManagementSystem\target\classes started by sadhm in A:\Da Vinci\java_workshop\springboot_intro\GymManagementSystem)
+2026-07-15T11:39:02.512+05:30  INFO 10216 --- [GymManagementSystem] [           main] c.e.G.GymManagementSystemApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-07-15T11:39:02.512+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.boot.SpringApplication               : Loading source class com.example.GymManagementSystem.GymManagementSystemApplication
+2026-07-15T11:39:02.579+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@53f3bdbd
+2026-07-15T11:39:03.501+05:30  INFO 10216 --- [GymManagementSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-15T11:39:03.554+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.example.GymManagementSystem'. Automatic @Repository and @Entity scanning is enabled.
+2026-07-15T11:39:03.644+05:30  INFO 10216 --- [GymManagementSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 129 ms. Found 10 JPA repository interfaces.
+2026-07-15T11:39:04.530+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\sadhm\.m2\repository\org\springframework\boot\spring-boot\3.3.0\spring-boot-3.3.0.jar
+2026-07-15T11:39:04.530+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\sadhm\.m2\repository\org\springframework\boot\spring-boot\3.3.0\spring-boot-3.3.0.jar
+2026-07-15T11:39:04.530+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2026-07-15T11:39:04.561+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-07-15T11:39:04.577+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-15T11:39:04.577+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.24]
+2026-07-15T11:39:04.705+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-15T11:39:04.705+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] w.s.c.ServletWebServerApplicationContext : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2026-07-15T11:39:04.705+05:30  INFO 10216 --- [GymManagementSystem] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2126 ms
+2026-07-15T11:39:04.985+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-07-15T11:39:05.071+05:30  INFO 10216 --- [GymManagementSystem] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-07-15T11:39:05.118+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-07-15T11:39:05.482+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-15T11:39:05.554+05:30  INFO 10216 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-15T11:39:05.958+05:30  INFO 10216 --- [GymManagementSystem] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@350567f1
+2026-07-15T11:39:05.961+05:30  INFO 10216 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-15T11:39:07.628+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-15T11:39:07.771+05:30  INFO 10216 --- [GymManagementSystem] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-15T11:39:08.204+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: springSecurityFilterChain urls=[/*] order=-100, characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, jwtAuthenticationFilter urls=[/*] order=2147483647
+2026-07-15T11:39:08.204+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
+2026-07-15T11:39:08.252+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.b.w.s.f.OrderedRequestContextFilter  : Filter 'requestContextFilter' configured for use
+2026-07-15T11:39:08.256+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] s.b.w.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
+2026-07-15T11:39:08.256+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] .DelegatingFilterProxyRegistrationBean$1 : Filter 'springSecurityFilterChain' configured for use
+2026-07-15T11:39:08.256+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.b.w.s.f.OrderedFormContentFilter     : Filter 'formContentFilter' configured for use
+2026-07-15T11:39:08.460+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-15T11:39:09.770+05:30  INFO 10216 --- [GymManagementSystem] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-07-15T11:39:09.773+05:30  WARN 10216 --- [GymManagementSystem] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+2026-07-15T11:39:09.880+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-07-15T11:39:10.009+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 52 mappings in 'requestMappingHandlerMapping'
+2026-07-15T11:39:10.076+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2026-07-15T11:39:10.158+05:30  INFO 10216 --- [GymManagementSystem] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@37b117dd, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@388b4f68, org.springframework.security.web.context.SecurityContextHolderFilter@7c3e94b2, org.springframework.security.web.header.HeaderWriterFilter@7ebd31df, org.springframework.web.filter.CorsFilter@46805e99, org.springframework.security.web.authentication.logout.LogoutFilter@11f2be38, com.example.GymManagementSystem.security.JwtAuthenticationFilter@294b045b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@b536551, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6ee9fcac, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@58decd96, org.springframework.security.web.session.SessionManagementFilter@79a1730e, org.springframework.security.web.access.ExceptionTranslationFilter@50f95c8, org.springframework.security.web.access.intercept.AuthorizationFilter@4e683bb8]
+2026-07-15T11:39:10.298+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-07-15T11:39:10.351+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-07-15T11:39:10.489+05:30  WARN 10216 --- [GymManagementSystem] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-07-15T11:39:10.494+05:30  INFO 10216 --- [GymManagementSystem] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-15T11:39:10.497+05:30  INFO 10216 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-07-15T11:39:10.512+05:30  INFO 10216 --- [GymManagementSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-07-15T11:39:10.540+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 
 ============================
@@ -263,12 +266,6 @@ Positive matches:
    JpaBaseConfiguration#transactionManager matched:
       - @ConditionalOnMissingBean (types: org.springframework.transaction.TransactionManager; SearchStrategy: all) did not find any beans (OnBeanCondition)
 
-   JpaBaseConfiguration.JpaWebConfiguration matched:
-      - @ConditionalOnClass found required class 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
-      - found 'session' scope (OnWebApplicationCondition)
-      - @ConditionalOnProperty (spring.jpa.open-in-view=true) matched (OnPropertyCondition)
-      - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor,org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter; SearchStrategy: all) did not find any beans (OnBeanCondition)
-
    JpaBaseConfiguration.PersistenceManagedTypesConfiguration matched:
       - @ConditionalOnMissingBean (types: org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean,jakarta.persistence.EntityManagerFactory; SearchStrategy: all) did not find any beans (OnBeanCondition)
 
@@ -337,6 +334,19 @@ Positive matches:
    RestTemplateAutoConfiguration#restTemplateBuilder matched:
       - @ConditionalOnMissingBean (types: org.springframework.boot.web.client.RestTemplateBuilder; SearchStrategy: all) did not find any beans (OnBeanCondition)
 
+   SecurityAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.authentication.DefaultAuthenticationEventPublisher' (OnClassCondition)
+
+   SecurityAutoConfiguration#authenticationEventPublisher matched:
+      - @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationEventPublisher; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   SecurityFilterAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer', 'org.springframework.security.config.http.SessionCreationPolicy' (OnClassCondition)
+      - found 'session' scope (OnWebApplicationCondition)
+
+   SecurityFilterAutoConfiguration#securityFilterChainRegistration matched:
+      - @ConditionalOnBean (names: springSecurityFilterChain; SearchStrategy: all) found bean 'springSecurityFilterChain' (OnBeanCondition)
+
    ServletWebServerFactoryAutoConfiguration matched:
       - @ConditionalOnClass found required class 'jakarta.servlet.ServletRequest' (OnClassCondition)
       - found 'session' scope (OnWebApplicationCondition)
@@ -350,6 +360,9 @@ Positive matches:
 
    SimpleCacheConfiguration matched:
       - Cache org.springframework.boot.autoconfigure.cache.SimpleCacheConfiguration automatic cache type (CacheCondition)
+
+   SpringBootWebSecurityConfiguration matched:
+      - found 'session' scope (OnWebApplicationCondition)
 
    SpringDataWebAutoConfiguration matched:
       - @ConditionalOnClass found required classes 'org.springframework.data.web.PageableHandlerMethodArgumentResolver', 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
@@ -795,6 +808,13 @@ Negative matches:
       Did not match:
          - @ConditionalOnClass did not find required class 'org.jooq.DSLContext' (OnClassCondition)
 
+   JpaBaseConfiguration.JpaWebConfiguration:
+      Did not match:
+         - @ConditionalOnProperty (spring.jpa.open-in-view=true) found different value in property 'open-in-view' (OnPropertyCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.web.servlet.config.annotation.WebMvcConfigurer' (OnClassCondition)
+         - found 'session' scope (OnWebApplicationCondition)
+
    JpaRepositoriesAutoConfiguration#entityManagerFactoryBootstrapExecutorCustomizer:
       Did not match:
          - AnyNestedCondition 0 matched 2 did not; NestedCondition on JpaRepositoriesAutoConfiguration.BootstrapExecutorCondition.LazyBootstrapMode @ConditionalOnProperty (spring.data.jpa.repositories.bootstrap-mode=lazy) did not find property 'bootstrap-mode'; NestedCondition on JpaRepositoriesAutoConfiguration.BootstrapExecutorCondition.DeferredBootstrapMode @ConditionalOnProperty (spring.data.jpa.repositories.bootstrap-mode=deferred) did not find property 'bootstrap-mode' (JpaRepositoriesAutoConfiguration.BootstrapExecutorCondition)
@@ -897,7 +917,7 @@ Negative matches:
 
    OAuth2ClientAutoConfiguration:
       Did not match:
-         - @ConditionalOnClass did not find required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+         - @ConditionalOnClass did not find required class 'org.springframework.security.oauth2.client.registration.ClientRegistration' (OnClassCondition)
 
    OAuth2ResourceServerAutoConfiguration:
       Did not match:
@@ -989,7 +1009,7 @@ Negative matches:
 
    ReactiveOAuth2ResourceServerAutoConfiguration:
       Did not match:
-         - @ConditionalOnClass did not find required class 'org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity' (OnClassCondition)
+         - @ConditionalOnWebApplication did not find reactive web application classes (OnWebApplicationCondition)
 
    ReactiveSecurityAutoConfiguration:
       Did not match:
@@ -997,7 +1017,10 @@ Negative matches:
 
    ReactiveUserDetailsServiceAutoConfiguration:
       Did not match:
-         - @ConditionalOnClass did not find required class 'org.springframework.security.authentication.ReactiveAuthenticationManager' (OnClassCondition)
+         - AnyNestedCondition 0 matched 2 did not; NestedCondition on ReactiveUserDetailsServiceAutoConfiguration.RSocketEnabledOrReactiveWebApplication.ReactiveWebApplicationCondition did not find reactive web application classes; NestedCondition on ReactiveUserDetailsServiceAutoConfiguration.RSocketEnabledOrReactiveWebApplication.RSocketSecurityEnabledCondition @ConditionalOnBean (types: org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler; SearchStrategy: all) did not find any beans of type org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler (ReactiveUserDetailsServiceAutoConfiguration.RSocketEnabledOrReactiveWebApplication)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.authentication.ReactiveAuthenticationManager' (OnClassCondition)
+         - AnyNestedCondition 1 matched 2 did not; NestedCondition on ReactiveUserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'password'; NestedCondition on ReactiveUserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'name'; NestedCondition on ReactiveUserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.ReactiveOpaqueTokenIntrospector' (ReactiveUserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured)
 
    ReactiveWebServerFactoryAutoConfiguration:
       Did not match:
@@ -1031,13 +1054,9 @@ Negative matches:
       Did not match:
          - @ConditionalOnClass did not find required class 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (OnClassCondition)
 
-   SecurityAutoConfiguration:
+   SecurityDataConfiguration:
       Did not match:
-         - @ConditionalOnClass did not find required class 'org.springframework.security.authentication.DefaultAuthenticationEventPublisher' (OnClassCondition)
-
-   SecurityFilterAutoConfiguration:
-      Did not match:
-         - @ConditionalOnClass did not find required class 'org.springframework.security.config.http.SessionCreationPolicy' (OnClassCondition)
+         - @ConditionalOnClass did not find required class 'org.springframework.security.data.repository.query.SecurityEvaluationContextExtension' (OnClassCondition)
 
    SendGridAutoConfiguration:
       Did not match:
@@ -1062,6 +1081,16 @@ Negative matches:
    SpringApplicationAdminJmxAutoConfiguration:
       Did not match:
          - @ConditionalOnProperty (spring.application.admin.enabled=true) did not find property 'enabled' (OnPropertyCondition)
+
+   SpringBootWebSecurityConfiguration.SecurityFilterChainConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) found beans named springSecurityFilterChain (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
 
    TaskExecutorConfigurations.SimpleAsyncTaskExecutorBuilderConfiguration#simpleAsyncTaskExecutorBuilderVirtualThreads:
       Did not match:
@@ -1101,7 +1130,10 @@ Negative matches:
 
    UserDetailsServiceAutoConfiguration:
       Did not match:
-         - @ConditionalOnClass did not find required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+         - @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder; SearchStrategy: all) found beans of type 'org.springframework.security.core.userdetails.UserDetailsService' adminUserDetailsService and found beans of type 'org.springframework.security.authentication.AuthenticationProvider' authenticationProvider (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+         - AnyNestedCondition 1 matched 2 did not; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'password'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'name'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector', 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured)
 
    WebClientAutoConfiguration:
       Did not match:
@@ -1185,7 +1217,7 @@ Unconditional classes:
 
 
 
-2026-07-10T13:16:23.319+05:30 DEBUG 29924 --- [GymManagementSystem] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : Application failed to start due to an exception
+2026-07-15T11:39:10.564+05:30 DEBUG 10216 --- [GymManagementSystem] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : Application failed to start due to an exception
 
 org.springframework.boot.web.server.PortInUseException: Port 8080 is already in use
 	at org.springframework.boot.web.server.PortInUseException.lambda$throwIfPortBindingException$0(PortInUseException.java:70) ~[spring-boot-3.3.0.jar:3.3.0]
@@ -1208,7 +1240,7 @@ org.springframework.boot.web.server.PortInUseException: Port 8080 is already in 
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.0.jar:3.3.0]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.0.jar:3.3.0]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.0.jar:3.3.0]
-	at com.example.GymManagementSystem.GymManagementSystemApplication.main(GymManagementSystemApplication.java:10) ~[classes/:na]
+	at com.example.GymManagementSystem.GymManagementSystemApplication.main(GymManagementSystemApplication.java:11) ~[classes/:na]
 Caused by: java.lang.IllegalArgumentException: standardService.connector.startFailed
 	at org.apache.catalina.core.StandardService.addConnector(StandardService.java:222) ~[tomcat-embed-core-10.1.24.jar:10.1.24]
 	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.addPreviouslyRemovedConnectors(TomcatWebServer.java:310) ~[spring-boot-3.3.0.jar:3.3.0]
@@ -1232,7 +1264,7 @@ Caused by: java.net.BindException: Address already in use: bind
 	at org.apache.catalina.connector.Connector.startInternal(Connector.java:1044) ~[tomcat-embed-core-10.1.24.jar:10.1.24]
 	... 19 common frames omitted
 
-2026-07-10T13:16:23.328+05:30 ERROR 29924 --- [GymManagementSystem] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+2026-07-15T11:39:10.569+05:30 ERROR 10216 --- [GymManagementSystem] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
 
 ***************************
 APPLICATION FAILED TO START
@@ -1249,8 +1281,8 @@ Identify and stop the process that's listening on port 8080 or configure this ap
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  12.734 s
-[INFO] Finished at: 2026-07-10T13:16:23+05:30
+[INFO] Total time:  31.877 s
+[INFO] Finished at: 2026-07-15T11:39:10+05:30
 [INFO] ------------------------------------------------------------------------
 [ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.3.0:run (default-cli) on project GymManagementSystem: Process terminated with exit code: 1 -> [Help 1]
 [ERROR] 

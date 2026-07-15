@@ -15,6 +15,8 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     List<Attendance> findByMemberIdOrderByAttendanceDateDescCheckInTimeDesc(Long memberId);
 
+    void deleteByMemberId(Long memberId);
+
     List<Attendance> findTop10ByOrderByAttendanceDateDescCheckInTimeDesc();
 
     long countByAttendanceDate(LocalDate attendanceDate);

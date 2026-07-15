@@ -48,6 +48,7 @@ public class OfferController {
     @DeleteMapping("/{id}")
     public String deleteOffer(@PathVariable Long id) {
         offerService.deleteOffer(id);
-        return "Offer disabled successfully";
+        return "Offer deleted successfully";
     }
 }
+

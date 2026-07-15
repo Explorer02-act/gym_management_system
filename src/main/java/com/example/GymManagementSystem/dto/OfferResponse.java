@@ -10,6 +10,7 @@ public class OfferResponse {
     private Long id;
     private String offerName;
     private BigDecimal discountPercentage;
+    private BigDecimal discountAmount;
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean active;
@@ -19,6 +20,7 @@ public class OfferResponse {
         response.setId(offer.getId());
         response.setOfferName(offer.getOfferName());
         response.setDiscountPercentage(offer.getDiscountPercentage());
+        response.setDiscountAmount(offer.getDiscountAmount());
         response.setStartDate(offer.getStartDate());
         response.setEndDate(offer.getEndDate());
         response.setActive(offer.isActive());
@@ -47,6 +49,14 @@ public class OfferResponse {
 
     public void setDiscountPercentage(BigDecimal discountPercentage) {
         this.discountPercentage = discountPercentage;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public LocalDate getStartDate() {

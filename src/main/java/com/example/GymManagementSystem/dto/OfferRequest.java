@@ -13,10 +13,12 @@ public class OfferRequest {
     @NotBlank(message = "Offer name is required")
     private String offerName;
 
-    @NotNull(message = "Discount percentage is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Discount percentage cannot be negative")
     @DecimalMax(value = "100.0", inclusive = true, message = "Discount percentage cannot exceed 100")
     private BigDecimal discountPercentage;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Discount amount cannot be negative")
+    private BigDecimal discountAmount;
 
     @NotNull(message = "Start date is required")
     private LocalDate startDate;
@@ -40,6 +42,14 @@ public class OfferRequest {
 
     public void setDiscountPercentage(BigDecimal discountPercentage) {
         this.discountPercentage = discountPercentage;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public LocalDate getStartDate() {

@@ -26,11 +26,14 @@ public class Offer extends AuditableEntity {
     @Column(nullable = false, unique = true)
     private String offerName;
 
-    @NotNull(message = "Discount percentage is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Discount percentage cannot be negative")
     @DecimalMax(value = "100.0", inclusive = true, message = "Discount percentage cannot exceed 100")
     @Column(nullable = false, precision = 5, scale = 2)
-    private BigDecimal discountPercentage;
+    private BigDecimal discountPercentage = BigDecimal.ZERO;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Discount amount cannot be negative")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal discountAmount = BigDecimal.ZERO;
 
     @NotNull(message = "Start date is required")
     @Column(nullable = false)
@@ -65,6 +68,14 @@ public class Offer extends AuditableEntity {
 
     public void setDiscountPercentage(BigDecimal discountPercentage) {
         this.discountPercentage = discountPercentage;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public LocalDate getStartDate() {

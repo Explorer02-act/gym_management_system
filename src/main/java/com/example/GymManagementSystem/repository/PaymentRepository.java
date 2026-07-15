@@ -15,6 +15,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByMemberIdOrderByPaymentDateDescIdDesc(Long memberId);
 
+    void deleteByMemberId(Long memberId);
+
     @Query("select coalesce(sum(p.amount), 0) from Payment p where p.member.id = :memberId")
     BigDecimal sumByMemberId(@Param("memberId") Long memberId);
 
@@ -31,4 +33,16 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("select p.membership.planType as planName, coalesce(sum(p.amount), 0) as totalRevenue, count(p) as paymentCount " +
             "from Payment p group by p.membership.planType order by sum(p.amount) desc")
     List<RevenueByPlanRow> revenueByPlan();
+
+    @Query("select coalesce(sum(p.amount), 0) from Payment p where p.paymentMode = 'CASH' and p.paymentDate = :date")
+    BigDecimal sumCashByPaymentDate(@Param("date") LocalDate date);
+
+    @Query("select coalesce(sum(p.amount), 0) from Payment p where p.paymentMode in ('GPAY', 'PHONEPE') and p.paymentDate = :date")
+    BigDecimal sumUpiByPaymentDate(@Param("date") LocalDate date);
+
+    @Query("select coalesce(sum(p.amount), 0) from Payment p where p.paymentMode = 'CASH' and p.paymentDate between :startDate and :endDate")
+    BigDecimal sumCashBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query("select coalesce(sum(p.amount), 0) from Payment p where p.paymentMode in ('GPAY', 'PHONEPE') and p.paymentDate between :startDate and :endDate")
+    BigDecimal sumUpiBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

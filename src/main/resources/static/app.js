@@ -12,16 +12,18 @@ const api = {
     expiringSevenDays: "/expiring-members/7-days",
     revenueSummary: "/revenue/summary",
     profile: memberId => `/members/${memberId}/profile`,
+    member: memberId => `/members/${memberId}`,
     receipt: paymentId => `/receipts/payment/${paymentId}`,
     renew: memberId => `/renewals/member/${memberId}`,
     payments: "/payments/add",
     pauseMembership: "/membership/pause"
 };
 
-const money = value => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;
+const money = value => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;`r`n`r`nfunction formatOfferDiscount(item) {`r`n    const percent = Number(item?.discountPercentage || 0);`r`n    const amount = Number(item?.discountAmount || 0);`r`n    const parts = [];`r`n    if (percent > 0) parts.push(`${percent}% off`);`r`n    if (amount > 0) parts.push(`${money(amount)} off`);`r`n    return parts.length ? parts.join(" + ") : "No discount";`r`n}
 const byId = id => document.getElementById(id);
 let plans = [];
 let authToken = sessionStorage.getItem("mm_auth_token") || "";
+let currentPaymentData = null;
 
 function showToast(message) {
     const toast = byId("toast");
@@ -60,7 +62,7 @@ async function login(username, password) {
     return result;
 }
 
-async function openReceipt(paymentId) {
+async function openReceipt(paymentId, paymentData = null) {
     const response = await fetch(api.receipt(paymentId), {
         headers: authToken ? { Authorization: `Bearer ${authToken}` } : {}
     });
@@ -69,7 +71,16 @@ async function openReceipt(paymentId) {
     }
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);
-    window.open(url, "_blank");
+    
+    // Store payment data for WhatsApp sharing
+    currentPaymentData = paymentData;
+    
+    // Show modal with PDF
+    const modal = byId("receiptModal");
+    const frame = byId("receiptFrame");
+    frame.src = url;
+    modal.hidden = false;
+    
     window.setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 async function request(path, options = {}) {
@@ -135,6 +146,10 @@ async function loadRevenueSummary() {
     byId("monthlyRevenue").textContent = money(summary.monthlyRevenue);
     byId("yearlyRevenue").textContent = money(summary.yearlyRevenue);
     byId("lifetimeRevenue").textContent = money(summary.lifetimeRevenue);
+    byId("todaysCashRevenue").textContent = money(summary.todaysCashRevenue);
+    byId("todaysUpiRevenue").textContent = money(summary.todaysUpiRevenue);
+    byId("monthlyCashRevenue").textContent = money(summary.monthlyCashRevenue);
+    byId("monthlyUpiRevenue").textContent = money(summary.monthlyUpiRevenue);
     renderRevenueByPlan(summary.revenueByPlan || []);
 }
 
@@ -164,13 +179,13 @@ function renderMembers(members) {
                 <select name="planId" required>
                     ${plans.map(plan => `<option value="${plan.id}">${escapeHtml(plan.name)} - ${money(plan.displayPrice)}</option>`).join("")}
                 </select>
-                <select name="paymentMode" required>
+                <select class="renew-payment-mode" name="paymentMode" required>
                     <option>GPAY</option>
                     <option>PHONEPE</option>
                     <option>CASH</option>
                     <option>CARD</option>
                 </select>
-                <input name="transactionId" placeholder="Transaction ID" required>
+                <input class="renew-transaction-id" name="transactionId" placeholder="Transaction ID">
                 <button type="submit">Renew Plan</button>
             </form>
         </article>
@@ -191,6 +206,24 @@ function renderMembers(members) {
 
     container.querySelectorAll(".member-renew-form").forEach(form => {
         form.addEventListener("submit", renewFromExpiringCard);
+        const paymentMode = form.querySelector(".renew-payment-mode");
+        const transactionId = form.querySelector(".renew-transaction-id");
+        if (paymentMode && transactionId) {
+            paymentMode.addEventListener("change", () => {
+                if (paymentMode.value.toUpperCase() === "CASH") {
+                    transactionId.removeAttribute("required");
+                    transactionId.placeholder = "Optional for cash payments";
+                } else {
+                    transactionId.setAttribute("required", "required");
+                    transactionId.placeholder = "Transaction ID";
+                }
+            });
+            // Initial validation
+            if (paymentMode.value.toUpperCase() === "CASH") {
+                transactionId.removeAttribute("required");
+                transactionId.placeholder = "Optional for cash payments";
+            }
+        }
     });
 }
 
@@ -211,13 +244,13 @@ function renderExpiring(items) {
                 <select name="planId" required>
                     ${plans.map(plan => `<option value="${plan.id}">${escapeHtml(plan.name)} - ${money(plan.displayPrice)}</option>`).join("")}
                 </select>
-                <select name="paymentMode" required>
+                <select class="renew-payment-mode" name="paymentMode" required>
                     <option>GPAY</option>
                     <option>PHONEPE</option>
                     <option>CASH</option>
                     <option>CARD</option>
                 </select>
-                <input name="transactionId" placeholder="Transaction ID" required>
+                <input class="renew-transaction-id" name="transactionId" placeholder="Transaction ID">
                 <button type="submit">Renew</button>
             </form>
         </article>
@@ -225,6 +258,24 @@ function renderExpiring(items) {
 
     container.querySelectorAll("[data-renew-member-id]").forEach(form => {
         form.addEventListener("submit", renewFromExpiringCard);
+        const paymentMode = form.querySelector(".renew-payment-mode");
+        const transactionId = form.querySelector(".renew-transaction-id");
+        if (paymentMode && transactionId) {
+            paymentMode.addEventListener("change", () => {
+                if (paymentMode.value.toUpperCase() === "CASH") {
+                    transactionId.removeAttribute("required");
+                    transactionId.placeholder = "Optional for cash payments";
+                } else {
+                    transactionId.setAttribute("required", "required");
+                    transactionId.placeholder = "Transaction ID";
+                }
+            });
+            // Initial validation
+            if (paymentMode.value.toUpperCase() === "CASH") {
+                transactionId.removeAttribute("required");
+                transactionId.placeholder = "Optional for cash payments";
+            }
+        }
     });
 }
 
@@ -287,7 +338,7 @@ function renderActiveOffers(items) {
         <article class="offer-card">
             <span class="badge">Offer</span>
             <strong>${escapeHtml(item.offerName || "Offer")}</strong>
-            <span class="meta">${Number(item.discountPercentage || 0)}% off</span>
+            <span class="meta">${formatOfferDiscount(item)}</span>
             <span class="meta">${escapeHtml(item.startDate || "-")} -> ${escapeHtml(item.endDate || "-")}</span>
         </article>
     `).join("");
@@ -304,7 +355,7 @@ function renderOffers(items) {
         <article class="list-row tight-row offer-row">
             <div>
                 <strong>${escapeHtml(item.offerName || "Offer")}</strong>
-                <span class="meta">${Number(item.discountPercentage || 0)}% off | ${escapeHtml(item.startDate || "-")} -> ${escapeHtml(item.endDate || "-")}</span>
+                <span class="meta">${formatOfferDiscount(item)} | ${escapeHtml(item.startDate || "-")} -> ${escapeHtml(item.endDate || "-")}</span>
             </div>
             <div class="row-actions">
                 <button type="button" class="small-button" data-offer-edit="${item.id}">Edit</button>
@@ -360,6 +411,7 @@ function renderProfile(profile) {
                     <h3>${escapeHtml(member.name || "Member")}</h3>
                     <span class="meta">${escapeHtml(member.memberCode || "")} | ${escapeHtml(member.phone || "")}</span>
                 </div>
+                <button type="button" class="ghost-button danger-button" data-delete-member-id="${member.id || ""}" data-delete-member-name="${escapeHtml(member.name || "this member")}">Remove</button>
             </div>
             <div class="profile-metrics">
                 <div><span>Total visits</span><strong>${profile.totalVisits || 0}</strong></div>
@@ -386,7 +438,7 @@ function renderProfile(profile) {
                             <input name="amount" type="number" min="1" step="1" value="${Math.round(balanceAmount)}" readonly required>
                         </label>
                         <label>Payment Mode
-                            <select name="paymentMode" required>
+                            <select class="profile-payment-mode" name="paymentMode" required>
                                 <option>GPAY</option>
                                 <option>PHONEPE</option>
                                 <option>CASH</option>
@@ -394,7 +446,7 @@ function renderProfile(profile) {
                             </select>
                         </label>
                         <label>Transaction ID
-                            <input name="transactionId" placeholder="Reference ID" required>
+                            <input class="profile-transaction-id" name="transactionId" placeholder="Reference ID">
                         </label>
                         <button type="submit">Complete Payment</button>
                     </form>
@@ -427,10 +479,32 @@ function renderProfile(profile) {
 
     container.querySelectorAll("[data-payment-form]").forEach(form => {
         form.addEventListener("submit", recordMembershipPayment);
+        const paymentMode = form.querySelector(".profile-payment-mode");
+        const transactionId = form.querySelector(".profile-transaction-id");
+        if (paymentMode && transactionId) {
+            paymentMode.addEventListener("change", () => {
+                if (paymentMode.value.toUpperCase() === "CASH") {
+                    transactionId.removeAttribute("required");
+                    transactionId.placeholder = "Optional for cash payments";
+                } else {
+                    transactionId.setAttribute("required", "required");
+                    transactionId.placeholder = "Reference ID";
+                }
+            });
+            // Initial validation
+            if (paymentMode.value.toUpperCase() === "CASH") {
+                transactionId.removeAttribute("required");
+                transactionId.placeholder = "Optional for cash payments";
+            }
+        }
     });
 
     container.querySelectorAll("[data-pause-form]").forEach(form => {
         form.addEventListener("submit", recordMembershipPause);
+    });
+
+    container.querySelectorAll("[data-delete-member-id]").forEach(button => {
+        button.addEventListener("click", () => deleteMember(Number(button.dataset.deleteMemberId), button.dataset.deleteMemberName));
     });
 }
 
@@ -552,7 +626,12 @@ async function recordMembershipPayment(event) {
         });
         showToast(`Payment recorded for ${payment.memberName || "member"}`);
         if (payment.id) {
-            await openReceipt(payment.id);
+            await openReceipt(payment.id, {
+                memberName: payment.memberName,
+                amount: payment.amount,
+                paymentMode: payment.paymentMode,
+                paymentDate: payment.paymentDate
+            });
         }
         await loadMemberProfile(payload.memberId);
         await refreshAll();
@@ -595,8 +674,31 @@ async function renewFromExpiringCard(event) {
         });
         showToast(`Renewed ${renewal.member.name} until ${renewal.membership.expiryDate}`);
         if (renewal.payment?.id) {
-            await openReceipt(renewal.payment.id);
+            await openReceipt(renewal.payment.id, {
+                memberName: renewal.member.name,
+                amount: renewal.payment.amount,
+                paymentMode: renewal.payment.paymentMode,
+                paymentDate: renewal.payment.paymentDate
+            });
         }
+        await refreshAll();
+    } catch (error) {
+        showToast(error.message);
+    }
+}
+
+async function deleteMember(memberId, memberName) {
+    if (!memberId) return;
+
+    const confirmed = window.confirm(`Remove ${memberName || "this member"} and all related data? This cannot be undone.`);
+    if (!confirmed) return;
+
+    try {
+        const message = await request(api.member(memberId), {
+            method: "DELETE"
+        });
+        showToast(message || "Member removed");
+        byId("memberProfile").innerHTML = "";
         await refreshAll();
     } catch (error) {
         showToast(error.message);
@@ -622,7 +724,7 @@ function preloadOfferForm(offerId) {
 
     byId("offerId").value = offer.id;
     byId("offerName").value = offer.offerName || "";
-    byId("discountPercentage").value = offer.discountPercentage || 0;
+    byId("discountPercentage").value = offer.discountPercentage || "";`r`n    byId("discountAmount").value = offer.discountAmount || "";
     byId("startDate").value = offer.startDate || "";
     byId("endDate").value = offer.endDate || "";
     byId("offerActive").checked = Boolean(offer.active);
@@ -640,11 +742,35 @@ function formData(form) {
 }
 
 function wireForms() {
+    // Conditional validation for transaction ID based on payment mode
+    const setupPaymentModeValidation = (paymentModeSelect, transactionIdInput) => {
+        if (!paymentModeSelect || !transactionIdInput) return;
+        
+        const validateTransactionId = () => {
+            const paymentMode = paymentModeSelect.value.toUpperCase();
+            if (paymentMode === "CASH") {
+                transactionIdInput.removeAttribute("required");
+                transactionIdInput.placeholder = "Optional for cash payments";
+            } else {
+                transactionIdInput.setAttribute("required", "required");
+                transactionIdInput.placeholder = "Reference ID after payment";
+            }
+        };
+        
+        paymentModeSelect.addEventListener("change", validateTransactionId);
+        validateTransactionId(); // Initial validation
+    };
+    
+    setupPaymentModeValidation(byId("enrollmentPaymentMode"), byId("enrollmentTransactionId"));
+
     byId("enrollmentForm").addEventListener("submit", async event => {
         event.preventDefault();
         const form = event.currentTarget;
         const payload = formData(form);
         payload.planId = Number(payload.planId);
+        if (!payload.joinDate) {
+            delete payload.joinDate;
+        }
 
         try {
             const enrollment = await request(api.enrollment, {
@@ -653,7 +779,12 @@ function wireForms() {
             });
             showToast(`Enrolled ${enrollment.member.name} as ${enrollment.member.memberCode}`);
             if (enrollment.payment?.id) {
-                await openReceipt(enrollment.payment.id);
+                await openReceipt(enrollment.payment.id, {
+                    memberName: enrollment.member.name,
+                    amount: enrollment.payment.amount,
+                    paymentMode: enrollment.payment.paymentMode,
+                    paymentDate: enrollment.payment.paymentDate
+                });
             }
             form.reset();
             if (plans.length) {
@@ -691,6 +822,8 @@ function wireForms() {
             showToast(error.message);
         }
     });
+
+    byId("clearOfferButton").addEventListener("click", resetOfferForm);
 
     byId("offerForm").addEventListener("submit", async event => {
         event.preventDefault();
@@ -748,6 +881,67 @@ function initials(value) {
         .join("");
 }
 
+function setupModalListeners() {
+    const modal = byId("receiptModal");
+    const closeButton = byId("closeReceiptModal");
+    const shareButton = byId("shareWhatsApp");
+    const downloadButton = byId("downloadReceipt");
+
+    if (closeButton) {
+        closeButton.addEventListener("click", () => {
+            modal.hidden = true;
+            byId("receiptFrame").src = "";
+        });
+    }
+
+    if (downloadButton) {
+        downloadButton.addEventListener("click", () => {
+            const frame = byId("receiptFrame");
+            if (frame.src) {
+                const link = document.createElement("a");
+                link.href = frame.src;
+                link.download = "receipt.pdf";
+                link.click();
+            }
+        });
+    }
+
+    if (shareButton) {
+        shareButton.addEventListener("click", shareViaWhatsApp);
+    }
+
+    // Close modal when clicking outside
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.hidden = true;
+            byId("receiptFrame").src = "";
+        }
+    });
+}
+
+function shareViaWhatsApp() {
+    const frame = byId("receiptFrame");
+    if (!frame.src) {
+        showToast("No receipt available");
+        return;
+    }
+
+    // Download the PDF first
+    const link = document.createElement("a");
+    link.href = frame.src;
+    link.download = "receipt.pdf";
+    link.click();
+
+    // Show instructions
+    showToast("PDF downloaded! Open WhatsApp and attach the receipt to share it.");
+    
+    // Optionally open WhatsApp after a short delay
+    setTimeout(() => {
+        const whatsappUrl = "https://wa.me/";
+        window.open(whatsappUrl, "_blank");
+    }, 1500);
+}
+
 async function init() {
     const loginForm = byId("loginForm");
     if (loginForm) {
@@ -769,6 +963,7 @@ async function init() {
     setClock();
     window.setInterval(setClock, 30000);
     wireForms();
+    setupModalListeners();
 
     if (!authToken) {
         showToast("Login required");
@@ -785,7 +980,6 @@ async function init() {
 }
 
 init();
-
 
 
 

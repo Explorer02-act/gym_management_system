@@ -88,7 +88,7 @@ select option {
 
 .shell {
     display: grid;
-    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-columns: 255px minmax(0, 1fr);
     min-height: 100vh;
 }
 
@@ -109,8 +109,8 @@ select option {
 }
 
 .brand-logo {
-    width: 160px;
-    height: 200px;
+    width: 185px;
+    height: 260px;
     object-fit: cover;
     object-position: center 42%;
     border-radius: 14px;
@@ -952,11 +952,11 @@ label {
 .hero-photo {
     position: absolute;
     z-index: 1;
-    right: 28px;
-    top: 10px;
-    bottom: 10px;
-    width: min(36vw, 470px);
-    height: calc(100% - 20px);
+    right: 18px;
+    top: 8px;
+    bottom: 8px;
+    width: min(42vw, 560px);
+    height: calc(100% - 16px);
     object-fit: contain;
     object-position: center;
     border-radius: 8px;
@@ -1069,4 +1069,18 @@ body.authenticated .auth-screen {
     gap: 6px;
     margin-top: 8px;
 }
+
+
+.offer-discount-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 760px) {
+    .offer-discount-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 

@@ -19,7 +19,24 @@ const api = {
     pauseMembership: "/membership/pause"
 };
 
-const money = value => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;`r`n`r`nfunction formatOfferDiscount(item) {`r`n    const percent = Number(item?.discountPercentage || 0);`r`n    const amount = Number(item?.discountAmount || 0);`r`n    const parts = [];`r`n    if (percent > 0) parts.push(`${percent}% off`);`r`n    if (amount > 0) parts.push(`${money(amount)} off`);`r`n    return parts.length ? parts.join(" + ") : "No discount";`r`n}
+const money = value => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;
+
+function formatOfferDiscount(item) {
+    const percent = Number(item?.discountPercentage || 0);
+    const amount = Number(item?.discountAmount || 0);
+
+    const parts = [];
+
+    if (percent > 0) {
+        parts.push(`${percent}% off`);
+    }
+
+    if (amount > 0) {
+        parts.push(`${money(amount)} off`);
+    }
+
+    return parts.length ? parts.join(" + ") : "No discount";
+}
 const byId = id => document.getElementById(id);
 let plans = [];
 let authToken = sessionStorage.getItem("mm_auth_token") || "";
@@ -724,7 +741,8 @@ function preloadOfferForm(offerId) {
 
     byId("offerId").value = offer.id;
     byId("offerName").value = offer.offerName || "";
-    byId("discountPercentage").value = offer.discountPercentage || "";`r`n    byId("discountAmount").value = offer.discountAmount || "";
+    byId("discountPercentage").value = offer.discountPercentage || "";
+    byId("discountAmount").value = offer.discountAmount || "";
     byId("startDate").value = offer.startDate || "";
     byId("endDate").value = offer.endDate || "";
     byId("offerActive").checked = Boolean(offer.active);
@@ -829,7 +847,12 @@ function wireForms() {
         event.preventDefault();
         const form = event.currentTarget;
         const payload = formData(form);
-        payload.discountPercentage = Number(payload.discountPercentage);
+        payload.discountPercentage = Number(payload.discountPercentage || 0);
+        payload.discountAmount = Number(payload.discountAmount || 0);
+        if (payload.discountPercentage <= 0 && payload.discountAmount <= 0) {
+            showToast("Enter discount % or cash off amount");
+            return;
+        }
         payload.active = byId("offerActive").checked;
 
         try {
@@ -980,6 +1003,9 @@ async function init() {
 }
 
 init();
+
+
+
 
 
 

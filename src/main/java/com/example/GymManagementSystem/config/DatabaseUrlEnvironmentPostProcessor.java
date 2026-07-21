@@ -14,13 +14,14 @@ import java.util.Map;
 
 public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
-    private static final String PROPERTY_SOURCE_NAME = "renderDatabaseUrl";
+    private static final String PROPERTY_SOURCE_NAME = "platformDatabaseUrl";
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         String databaseUrl = firstPresent(
                 System.getenv("SPRING_DATASOURCE_URL"),
                 System.getenv("JDBC_DATABASE_URL"),
+                System.getenv("MYSQL_URL"),
                 System.getenv("DATABASE_URL")
         );
 
@@ -103,3 +104,5 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
         return null;
     }
 }
+
+

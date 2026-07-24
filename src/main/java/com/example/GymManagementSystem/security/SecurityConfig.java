@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .accessDeniedHandler((request, response, accessDeniedException) -> writeError(response, HttpStatus.FORBIDDEN, "Forbidden")))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/app.js", "/styles.css", "/assets/**", "/favicon.ico").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers("/admins/**").hasRole("ADMIN")
                         .requestMatchers("/dashboard/**", "/revenue/**", "/receipts/**", "/settings/**").hasRole("ADMIN")
@@ -83,17 +84,27 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(@Value("${app.cors.allowed-origins:http://localhost:3000}") String allowedOrigins) {
+    public CorsConfigurationSource corsConfigurationSource(@Value("${app.cors.allowed-origins:http://localhost:3000}") String allowedOrigins,
+                                                           @Value("${app.cors.allowed-origin-patterns:http://localhost:*,https://*.up.railway.app,https://*.railway.app}") String allowedOriginPatterns) {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> origins = Arrays.stream(allowedOrigins.split(",")).map(String::trim).filter(origin -> !origin.isBlank()).toList();
+        List<String> origins = commaSeparatedList(allowedOrigins);
+        List<String> originPatterns = commaSeparatedList(allowedOriginPatterns);
         configuration.setAllowedOrigins(origins);
+        configuration.setAllowedOriginPatterns(originPatterns);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    private List<String> commaSeparatedList(String value) {
+        return Arrays.stream(value.split(","))
+                .map(String::trim)
+                .filter(item -> !item.isBlank())
+                .toList();
     }
 
     private void writeError(HttpServletResponse response, HttpStatus status, String message) throws IOException {

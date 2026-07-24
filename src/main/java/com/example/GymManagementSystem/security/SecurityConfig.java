@@ -85,7 +85,7 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(@Value("${app.cors.allowed-origins:http://localhost:3000}") String allowedOrigins,
-                                                           @Value("${app.cors.allowed-origin-patterns:http://localhost:*,https://*.up.railway.app,https://*.railway.app}") String allowedOriginPatterns) {
+                                                           @Value("${app.cors.allowed-origin-patterns:*}") String allowedOriginPatterns) {
         CorsConfiguration configuration = new CorsConfiguration();
         List<String> origins = commaSeparatedList(allowedOrigins);
         List<String> originPatterns = commaSeparatedList(allowedOriginPatterns);
